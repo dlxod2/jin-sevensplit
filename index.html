@@ -323,7 +323,7 @@ function _playAlarmSound(type) {
 
 // ── 서비스 워커 + 알림 권한 ────────────────────────────────────────
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js')
+  navigator.serviceWorker.register('/jin-sevensplit/sw.js')
     .then(() => checkNotificationAuth())
     .catch(() => checkNotificationAuth());
 } else {
