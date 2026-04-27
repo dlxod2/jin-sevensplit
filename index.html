@@ -59,13 +59,8 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
 .up{background:var(--color-background-success);color:var(--color-text-success)}
 .dn{background:var(--color-background-danger);color:var(--color-text-danger)}
 .neu{background:var(--color-background-secondary);color:var(--color-text-secondary)}
-
-/* 가이드북 버튼 스타일 */
-.guide-btn{display:block;width:100%;background:linear-gradient(90deg, #c9a84c, #f0d080);color:#111;text-align:center;padding:10px;border-radius:var(--border-radius-md);text-decoration:none;font-size:13px;font-weight:700;margin-bottom:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
-
-/* 알림 권한 버튼 */
+.guide-btn{display:block;width:100%;background:linear-gradient(90deg,#c9a84c,#f0d080);color:#111;text-align:center;padding:10px;border-radius:var(--border-radius-md);text-decoration:none;font-size:13px;font-weight:700;margin-bottom:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
 .auth-btn{display:none;width:100%;background:#2563eb;color:#fff;text-align:center;padding:12px;border-radius:var(--border-radius-md);border:none;font-size:14px;font-weight:700;margin-bottom:8px;cursor:pointer}
-
 .nav{display:flex;gap:6px;margin-bottom:8px}
 .nav-btn{flex:1;padding:8px;font-size:11px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;text-align:center}
 .nav-btn.active{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info)}
@@ -95,7 +90,7 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]{-moz-appearance:textfield}
 table{width:100%;border-collapse:collapse;font-size:11px;background:var(--color-background-primary);border-radius:var(--border-radius-md);overflow:hidden;border:0.5px solid var(--color-border-tertiary)}
 th{padding:8px 2px;text-align:center;font-weight:500;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);font-size:10px;background:var(--color-background-secondary)}
-td{padding:6px 2px;text-align:center;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--text-primary);vertical-align:middle}
+td{padding:6px 2px;text-align:center;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 .rate-wrap{display:flex;align-items:center;justify-content:center;gap:3px}
 .rb{width:30px;height:30px;border:0.5px solid var(--color-border-secondary);border-radius:6px;background:var(--color-background-secondary);cursor:pointer;font-size:18px;font-weight:300;color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-user-select:none;user-select:none;touch-action:manipulation}
@@ -142,7 +137,6 @@ tr:last-child td{border-bottom:none}
 <div class="wrap">
 
 <button id="ask-auth" class="auth-btn">🔔 실시간 팝업 알림 활성화하기</button>
-
 <a href="guide%20book.html" class="guide-btn">📖 세븐 스플릿 투자 가이드북 보기</a>
 
 <div class="top">
@@ -275,42 +269,135 @@ const BANKS=[
   {fee:0,tag:'직접입력',cls:'background:var(--color-background-secondary);color:var(--color-text-secondary)'},
 ];
 
-// PWA 서비스 워커 및 알림 권한 설정
+// ── AudioContext 모바일 잠금 해제 ──────────────────────────────────
+let audioCtx = null;
+
+function _unlockAudio() {
+  if (audioCtx) return;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const buf = audioCtx.createBuffer(1, 1, 22050);
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    src.connect(audioCtx.destination);
+    src.start(0);
+  } catch(e) { audioCtx = null; }
+}
+
+// 첫 터치 시 AudioContext 활성화 + 알림 권한 요청 (iOS/Android 필수)
+document.addEventListener('touchstart', function() {
+  _unlockAudio();
+  if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+    Notification.requestPermission().then(p => {
+      if (p === 'granted') document.getElementById('ask-auth').style.display = 'none';
+      else checkNotificationAuth();
+    });
+  }
+}, { once: true });
+
+// 첫 클릭 시 AudioContext 활성화 (데스크톱)
+document.addEventListener('click', function() { _unlockAudio(); }, { once: true });
+
+// ── 알람 소리 (매수: 도↑미↑솔 / 매도: 솔↓미↓도) ──────────────────
+function _playAlarmSound(type) {
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) { return; }
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  const now = audioCtx.currentTime;
+  const freqs = type === 'buy'
+    ? [[440, 0], [554, 0.18], [659, 0.36]]
+    : [[659, 0], [554, 0.18], [440, 0.36]];
+  freqs.forEach(([freq, t]) => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.4, now + t);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + t + 0.28);
+    osc.start(now + t);
+    osc.stop(now + t + 0.28);
+  });
+}
+
+// ── 서비스 워커 + 알림 권한 ────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js')
-  .then(reg => {
-    console.log('서비스 워커 등록 성공');
-    checkNotificationAuth();
-  });
+    .then(() => checkNotificationAuth())
+    .catch(() => checkNotificationAuth());
+} else {
+  checkNotificationAuth();
 }
 
 function checkNotificationAuth() {
   const btn = document.getElementById('ask-auth');
+  if (typeof Notification === 'undefined') return;
   if (Notification.permission === 'default') {
     btn.style.display = 'block';
     btn.onclick = () => {
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
+      Notification.requestPermission().then(p => {
+        if (p === 'granted') {
           btn.style.display = 'none';
-          alert('실시간 팝업 알림이 활성화되었습니다!');
+        } else {
+          btn.textContent = '🔕 알림 차단됨 — 브라우저 설정에서 허용해주세요';
+          btn.style.background = '#dc2626';
+          btn.onclick = null;
         }
       });
     };
+  } else if (Notification.permission === 'denied') {
+    btn.style.display = 'block';
+    btn.textContent = '🔕 알림 차단됨 — 브라우저 설정에서 허용해주세요';
+    btn.style.background = '#dc2626';
+    btn.onclick = null;
   }
 }
 
 function sendPush(title, body) {
-  if (Notification.permission === 'granted') {
-    navigator.serviceWorker.ready.then(reg => {
-      reg.showNotification(title, {
-        body: body,
-        icon: 'https://dlxod2.github.io/jin-sevensplit/favicon.ico',
-        vibrate: [200, 100, 200],
-        tag: 'price-alert'
-      });
-    });
+  if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+  const opts = {
+    body,
+    icon: 'https://dlxod2.github.io/jin-sevensplit/favicon.ico',
+    vibrate: [200, 100, 200],
+    tag: 'price-alert',
+    requireInteraction: false,
+  };
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready
+      .then(reg => reg.showNotification(title, opts))
+      .catch(() => new Notification(title, opts));
+  } else {
+    new Notification(title, opts);
   }
 }
+
+// ── 알람 발동 (소리 + 진동 + 토스트 + 푸시) ────────────────────────
+function fireAlarm(type, idx, rate) {
+  const key = String(idx);
+  if (alarmFired[type][key]) return;
+  alarmFired[type][key] = true;
+
+  const title = type === 'buy' ? `📉 ${idx+1}번 매수 알람!` : `📈 ${idx+1}번 매도 알람!`;
+  const body  = `${rate.toLocaleString()}원 도달! 지금 확인하세요.`;
+
+  _playAlarmSound(type);
+
+  if (navigator.vibrate) {
+    navigator.vibrate(type === 'buy' ? [200,100,200,100,200] : [400,150,400]);
+  }
+
+  const t = document.getElementById('alarm-toast');
+  t.className = 'alarm-toast alarm-' + (type === 'buy' ? 'buy' : 'sell');
+  t.innerHTML = `<strong>${title}</strong><br>${body}`;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 4000);
+
+  sendPush(title, body);
+  document.getElementById('alarm-status').textContent = `🔔 알람 발생!`;
+}
+
+function resetAlarms(){alarmFired={buy:{},sell:{}};document.getElementById('alarm-status').textContent='🔔 알람 대기중';}
 
 function goPage(p){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('show'));
@@ -329,27 +416,6 @@ const getBuyGap=()=>parseFloat(document.getElementById('buy-gap').value)||(-5);
 const getSellGap=()=>parseFloat(document.getElementById('sell-gap').value)||5;
 const getFee=()=>parseFloat(document.getElementById('c-fee').value)||0;
 
-function fireAlarm(type, idx, rate) {
-  const key = String(idx); if (alarmFired[type][key]) return;
-  alarmFired[type][key] = true;
-
-  const title = type === 'buy' ? `📉 ${idx + 1}번 매수 알람!` : `📈 ${idx + 1}번 매도 알람!`;
-  const body = `${rate.toLocaleString()}원 도달! 지금 확인하세요.`;
-
-  // 1. 화면 토스트 알림
-  const t = document.getElementById('alarm-toast');
-  t.className = 'alarm-toast alarm-' + (type === 'buy' ? 'buy' : 'sell');
-  t.innerHTML = `<strong>${title}</strong><br>${body}`;
-  t.style.display = 'block';
-  setTimeout(() => t.style.display = 'none', 4000);
-
-  // 2. 브라우저/시스템 푸시 알림
-  sendPush(title, body);
-
-  document.getElementById('alarm-status').textContent = `🔔 알람 발생!`;
-}
-
-function resetAlarms(){alarmFired={buy:{},sell:{}};document.getElementById('alarm-status').textContent='🔔 알람 대기중';}
 function buildTable(){
   document.getElementById('tbl').innerHTML=accts.map((a,i)=>{
     const s=i===0?Math.round(curRate):(parseFloat(accts[i-1].rate)?Math.round(parseFloat(accts[i-1].rate)-getGap()):'');
