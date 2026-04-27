@@ -1,15 +1,24 @@
-self.addEventListener('install', (p) => {
+self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
+self.addEventListener('activate', (e) => {
+  e.waitUntil(clients.claim());
+});
+
 self.addEventListener('push', (e) => {
-  const data = e.data.json();
-  const options = {
-    body: data.body,
-    icon: 'https://dlxod2.github.io/jin-sevensplit/favicon.ico',
-    vibrate: [200, 100, 200]
+  const data = e.data ? e.data.json() : {
+    title: '세븐 스플릿 알람',
+    body: '환율 목표가 도달!'
   };
-  e.waitUntil(self.registration.showNotification(data.title, options));
+  e.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: 'https://dlxod2.github.io/jin-sevensplit/favicon.ico',
+      vibrate: [200, 100, 200],
+      tag: 'price-alert'
+    })
+  );
 });
 
 self.addEventListener('notificationclick', (e) => {
