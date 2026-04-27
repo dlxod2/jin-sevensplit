@@ -60,6 +60,10 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
 .up{background:var(--color-background-success);color:var(--color-text-success)}
 .dn{background:var(--color-background-danger);color:var(--color-text-danger)}
 .neu{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+
+/* 가이드북 버튼 스타일 */
+.guide-btn{display:block;width:100%;background:linear-gradient(90deg, #c9a84c, #f0d080);color:#111;text-align:center;padding:10px;border-radius:var(--border-radius-md);text-decoration:none;font-size:13px;font-weight:700;margin-bottom:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+
 .nav{display:flex;gap:6px;margin-bottom:8px}
 .nav-btn{flex:1;padding:8px;font-size:11px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;text-align:center}
 .nav-btn.active{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info)}
@@ -74,8 +78,6 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
 .best{background:var(--color-background-success);color:var(--color-text-success)}
 .good{background:var(--color-background-info);color:var(--color-text-info)}
 .cfg{margin-bottom:8px;background:var(--color-background-primary);border-radius:var(--border-radius-md);padding:6px;border:0.5px solid var(--color-border-tertiary)}
-
-/* 모바일 한 줄 배치를 위한 CSS 수정 영역 */
 .cfg-row4{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
 .cfg-item{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
 .cfg-lbl{font-size:9px;color:var(--color-text-secondary);text-align:center;white-space:nowrap;letter-spacing:-0.5px}
@@ -86,13 +88,12 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
 .csb{width:18px;height:24px;border:0.5px solid var(--color-border-secondary);border-radius:4px;background:var(--color-background-secondary);cursor:pointer;font-size:13px;color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-user-select:none;user-select:none;touch-action:manipulation}
 .csb:active{background:var(--color-background-info);color:var(--color-text-info)}
 .cfg-inp{flex:1;min-width:0;padding:2px 0;border:0.5px solid var(--color-border-secondary);border-radius:4px;font-size:11px;background:var(--color-background-primary);color:var(--color-text-primary);text-align:center}
-
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]{-moz-appearance:textfield}
 table{width:100%;border-collapse:collapse;font-size:11px;background:var(--color-background-primary);border-radius:var(--border-radius-md);overflow:hidden;border:0.5px solid var(--color-border-tertiary)}
 th{padding:8px 2px;text-align:center;font-weight:500;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);font-size:10px;background:var(--color-background-secondary)}
-td{padding:6px 2px;text-align:center;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);vertical-align:middle}
+td{padding:6px 2px;text-align:center;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--text-primary);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 .rate-wrap{display:flex;align-items:center;justify-content:center;gap:3px}
 .rb{width:30px;height:30px;border:0.5px solid var(--color-border-secondary);border-radius:6px;background:var(--color-background-secondary);cursor:pointer;font-size:18px;font-weight:300;color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-user-select:none;user-select:none;touch-action:manipulation}
@@ -137,6 +138,9 @@ tr:last-child td{border-bottom:none}
 </head>
 <body>
 <div class="wrap">
+
+<a href="guide%20book.html" class="guide-btn">📖 세븐 스플릿 투자 가이드북 보기</a>
+
 <div class="top">
   <div>
     <div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:2px">USD/KRW 실시간</div>
