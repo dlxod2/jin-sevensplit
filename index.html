@@ -146,6 +146,7 @@ tr:last-child td{border-bottom:none}
       <span class="rate-num" id="r-cur">로딩중...</span>
       <span class="badge neu" id="r-chg">-</span>
     </div>
+    <div style="font-size:10px;color:var(--color-text-secondary);margin-top:2px" id="r-time">업데이트 중...</div>
     <div style="font-size:10px;color:var(--color-text-warning);margin-top:3px">⚠️ 달러 매매 시 해당 은행 환율 정보 확인 필요</div>
   </div>
   <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
@@ -271,102 +272,99 @@ const BANKS=[
   {fee:0,tag:'직접입력',cls:'background:var(--color-background-secondary);color:var(--color-text-secondary)'},
 ];
 
-// ── AudioContext 모바일 잠금 해제 ──────────────────────────────────
-let audioCtx = null;
-function _unlockAudio() {
-  if (audioCtx) return;
-  try {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const buf = audioCtx.createBuffer(1, 1, 22050);
-    const src = audioCtx.createBufferSource();
-    src.buffer = buf; src.connect(audioCtx.destination); src.start(0);
-  } catch(e) { audioCtx = null; }
+// AudioContext 모바일 잠금 해제
+let audioCtx=null;
+function _unlockAudio(){
+  if(audioCtx)return;
+  try{
+    audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    const buf=audioCtx.createBuffer(1,1,22050),src=audioCtx.createBufferSource();
+    src.buffer=buf;src.connect(audioCtx.destination);src.start(0);
+  }catch(e){audioCtx=null;}
 }
-document.addEventListener('touchstart', function() {
+document.addEventListener('touchstart',function(){
   _unlockAudio();
-  if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
-    Notification.requestPermission().then(p => {
-      if (p === 'granted') document.getElementById('ask-auth').style.display = 'none';
+  if(typeof Notification!=='undefined'&&Notification.permission==='default'){
+    Notification.requestPermission().then(p=>{
+      if(p==='granted')document.getElementById('ask-auth').style.display='none';
       else checkNotificationAuth();
     });
   }
-}, { once: true });
-document.addEventListener('click', function() { _unlockAudio(); }, { once: true });
+},{once:true});
+document.addEventListener('click',function(){_unlockAudio();},{once:true});
 
-// ── 알람 소리 ──────────────────────────────────────────────────────
-function _playAlarmSound(type) {
-  if (!audioCtx) {
-    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) { return; }
-  }
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  const now = audioCtx.currentTime;
-  const freqs = type === 'buy' ? [[440,0],[554,0.18],[659,0.36]] : [[659,0],[554,0.18],[440,0.36]];
-  freqs.forEach(([freq, t]) => {
-    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.frequency.value = freq;
-    gain.gain.setValueAtTime(0.4, now+t);
-    gain.gain.exponentialRampToValueAtTime(0.001, now+t+0.28);
-    osc.start(now+t); osc.stop(now+t+0.28);
+// 알람 소리
+function _playAlarmSound(type){
+  if(!audioCtx){try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return;}}
+  if(audioCtx.state==='suspended')audioCtx.resume();
+  const now=audioCtx.currentTime;
+  const freqs=type==='buy'?[[440,0],[554,0.18],[659,0.36]]:[[659,0],[554,0.18],[440,0.36]];
+  freqs.forEach(([freq,t])=>{
+    const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+    osc.connect(gain);gain.connect(audioCtx.destination);
+    osc.frequency.value=freq;
+    gain.gain.setValueAtTime(0.4,now+t);
+    gain.gain.exponentialRampToValueAtTime(0.001,now+t+0.28);
+    osc.start(now+t);osc.stop(now+t+0.28);
   });
 }
 
-// ── 서비스워커 + 알림 권한 ─────────────────────────────────────────
-if ('serviceWorker' in navigator) {
+// 서비스워커 + 알림 권한
+if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/jin-sevensplit/sw.js')
-    .then(() => checkNotificationAuth())
-    .catch(() => checkNotificationAuth());
-} else { checkNotificationAuth(); }
+    .then(()=>checkNotificationAuth())
+    .catch(()=>checkNotificationAuth());
+}else{checkNotificationAuth();}
 
-function checkNotificationAuth() {
-  const btn = document.getElementById('ask-auth');
-  if (typeof Notification === 'undefined') return;
-  if (Notification.permission === 'default') {
-    btn.style.display = 'block';
-    btn.onclick = () => {
-      Notification.requestPermission().then(p => {
-        if (p === 'granted') { btn.style.display = 'none'; }
-        else { btn.textContent='🔕 알림 차단됨 — 브라우저 설정에서 허용해주세요'; btn.style.background='#dc2626'; btn.onclick=null; }
+function checkNotificationAuth(){
+  const btn=document.getElementById('ask-auth');
+  if(typeof Notification==='undefined')return;
+  if(Notification.permission==='default'){
+    btn.style.display='block';
+    btn.onclick=()=>{
+      Notification.requestPermission().then(p=>{
+        if(p==='granted'){btn.style.display='none';}
+        else{btn.textContent='🔕 알림 차단됨 — 브라우저 설정에서 허용해주세요';btn.style.background='#dc2626';btn.onclick=null;}
       });
     };
-  } else if (Notification.permission === 'denied') {
-    btn.style.display = 'block';
-    btn.textContent = '🔕 알림 차단됨 — 브라우저 설정에서 허용해주세요';
-    btn.style.background = '#dc2626'; btn.onclick = null;
+  }else if(Notification.permission==='denied'){
+    btn.style.display='block';
+    btn.textContent='🔕 알림 차단됨 — 브라우저 설정에서 허용해주세요';
+    btn.style.background='#dc2626';btn.onclick=null;
   }
 }
 
-function sendPush(title, body) {
-  if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
-  const opts = { body, icon:'https://dlxod2.github.io/jin-sevensplit/favicon.ico', vibrate:[200,100,200], tag:'price-alert', requireInteraction:false };
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then(reg => reg.showNotification(title, opts)).catch(() => new Notification(title, opts));
-  } else { new Notification(title, opts); }
+function sendPush(title,body){
+  if(typeof Notification==='undefined'||Notification.permission!=='granted')return;
+  const opts={body,icon:'https://dlxod2.github.io/jin-sevensplit/favicon.ico',vibrate:[200,100,200],tag:'price-alert',requireInteraction:false};
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,opts)).catch(()=>new Notification(title,opts));
+  }else{new Notification(title,opts);}
 }
 
-// ── 알람 발동 ──────────────────────────────────────────────────────
-function fireAlarm(type, idx, rate) {
-  const key = String(idx); if (alarmFired[type][key]) return;
-  alarmFired[type][key] = true;
-  const title = type==='buy' ? `📉 ${idx+1}번 매수 알람!` : `📈 ${idx+1}번 매도 알람!`;
-  const body = `${rate.toLocaleString()}원 도달! 지금 확인하세요.`;
+// 알람 발동
+function fireAlarm(type,idx,rate){
+  const key=String(idx);if(alarmFired[type][key])return;
+  alarmFired[type][key]=true;
+  const title=type==='buy'?`📉 ${idx+1}번 매수 알람!`:`📈 ${idx+1}번 매도 알람!`;
+  const body=`${rate.toLocaleString()}원 도달! 지금 확인하세요.`;
   _playAlarmSound(type);
-  if (navigator.vibrate) navigator.vibrate(type==='buy' ? [200,100,200,100,200] : [400,150,400]);
-  const t = document.getElementById('alarm-toast');
-  t.className = 'alarm-toast alarm-'+(type==='buy'?'buy':'sell');
-  t.innerHTML = `<strong>${title}</strong><br>${body}`;
-  t.style.display = 'block'; setTimeout(()=>t.style.display='none', 4000);
-  sendPush(title, body);
-  document.getElementById('alarm-status').textContent = `🔔 알람 발생!`;
+  if(navigator.vibrate)navigator.vibrate(type==='buy'?[200,100,200,100,200]:[400,150,400]);
+  const t=document.getElementById('alarm-toast');
+  t.className='alarm-toast alarm-'+(type==='buy'?'buy':'sell');
+  t.innerHTML=`<strong>${title}</strong><br>${body}`;
+  t.style.display='block';setTimeout(()=>t.style.display='none',4000);
+  sendPush(title,body);
+  document.getElementById('alarm-status').textContent='🔔 알람 발생!';
 }
 function resetAlarms(){alarmFired={buy:{},sell:{}};document.getElementById('alarm-status').textContent='🔔 알람 대기중';}
 
-// ── 페이지/뱅크/설정 ───────────────────────────────────────────────
+// 페이지/뱅크/설정
 function goPage(p){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('show'));
   document.querySelectorAll('.nav-btn').forEach((el,i)=>el.classList.toggle('active',['main','chart','fee'][i]===p));
   document.getElementById('page-'+p).classList.add('show');
-  if(p==='chart') loadChart();
+  if(p==='chart')loadChart();
 }
 function selBank(i){selB=i;for(let j=0;j<4;j++)document.getElementById('bk'+j).classList.toggle('sel',j===i);if(i!==3)document.getElementById('c-fee').value=BANKS[i].fee;updTag();renderCalc();}
 function onFeeInput(){selB=3;for(let j=0;j<4;j++)document.getElementById('bk'+j).classList.toggle('sel',j===3);document.getElementById('cfd').textContent=(parseFloat(document.getElementById('c-fee').value)||0)+'%';updTag();renderCalc();}
@@ -379,7 +377,7 @@ const getBuyGap=()=>parseFloat(document.getElementById('buy-gap').value)||(-5);
 const getSellGap=()=>parseFloat(document.getElementById('sell-gap').value)||5;
 const getFee=()=>parseFloat(document.getElementById('c-fee').value)||0;
 
-// ── 테이블 ─────────────────────────────────────────────────────────
+// 테이블
 function buildTable(){
   document.getElementById('tbl').innerHTML=accts.map((a,i)=>{
     const s=i===0?Math.round(curRate):(parseFloat(accts[i-1].rate)?Math.round(parseFloat(accts[i-1].rate)-getGap()):'');
@@ -413,7 +411,7 @@ function renderCalc(){
         <span style="color:var(--color-text-danger)">매수 ${aB.toLocaleString()} <span class="${cur<=aB?'pos':'muted'}">${cur<=aB?'✓':''}</span></span>
         <span style="color:var(--color-text-success)">매도 ${sT.toLocaleString()} <span class="${cur>=sT?'pos':'muted'}">${cur>=sT?'✓익절!':''}</span></span>
         <span class="pos" style="font-size:10px">+${nS.toLocaleString()}원</span></div>`;
-    } else {
+    }else{
       pe.innerHTML=`<span class="muted" style="font-size:10px">${s?s.toLocaleString()+'<br><span style="font-size:9px">추천가</span>':'-'}</span>`;
       ne.innerHTML='<span class="muted">-</span>';
     }
@@ -422,7 +420,7 @@ function renderCalc(){
   if(cnt>0){
     document.getElementById('isum').innerHTML=`<div class="ibox"><div class="irow"><span>총 수수료</span><span style="font-weight:500;color:var(--color-text-warning)">${f===0?'무료 (0원)':'−'+tF.toLocaleString()+'원'}</span></div><div class="irow"><span>실제 순수익</span><span class="${tN>=0?'pos':'neg'}" style="font-weight:500">${tN>=0?'+':''}${tN.toLocaleString()}원</span></div></div>`;
     document.getElementById('bebox').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><span style="font-size:11px;color:var(--color-text-secondary);font-weight:500">목표가 알람 (매수${bg>0?'+':''}${bg}/매도+${sg}원)</span><button class="xb" onclick="resetAlarms()">알람초기화</button></div><div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 12px">${beLines}</div>`;
-  } else {document.getElementById('isum').innerHTML='';document.getElementById('bebox').innerHTML='';}
+  }else{document.getElementById('isum').innerHTML='';document.getElementById('bebox').innerHTML='';}
 }
 
 function sr(i){accts[i].rate=document.getElementById('r'+i).value;resetAlarms();renderCalc();}
@@ -433,7 +431,7 @@ function ss(i,d,e){e.preventDefault();sp(i,d);st=setTimeout(()=>{si=setInterval(
 function es(e){if(e)e.preventDefault();clearTimeout(st);clearInterval(si);}
 function cl(i){accts[i]={rate:'',qty:''};const ri=document.getElementById('r'+i),qi=document.getElementById('q'+i);if(ri)ri.value='';if(qi)qi.value='';resetAlarms();renderCalc();}
 
-// ── 차트 ───────────────────────────────────────────────────────────
+// 차트
 function selChart(m){chartMonths=m;document.querySelectorAll('.ct').forEach((el,i)=>el.classList.toggle('active',[3,6,12][i]===m));loadChart();}
 function fmtDate(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 async function fetchHistorical(ds){if(chartDataCache[ds])return chartDataCache[ds];try{const res=await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${ds}/v1/currencies/usd.json`),d=await res.json(),v=Math.round((d.usd?.krw||0)*100)/100;chartDataCache[ds]=v;return v;}catch(e){return null;}}
@@ -467,58 +465,52 @@ function renderChart(points){
     <div class="guide-box"><div style="font-size:12px;font-weight:500;margin-bottom:8px">📊 적정 구매가 가이드</div><div class="guide-row"><span style="color:var(--color-text-secondary)">현재 환율</span><span style="font-weight:500">${cur.toLocaleString()}원</span></div><div class="guide-row"><span style="color:var(--color-text-secondary)">${chartMonths}개월 평균</span><span style="font-weight:500">${avgV.toLocaleString()}원</span></div><div class="guide-row"><span style="color:var(--color-text-secondary)">저점 구간 (하위 25%)</span><span class="neg" style="font-weight:500">${Math.round(q25).toLocaleString()}원 이하</span></div><div class="guide-row"><span style="color:var(--color-text-secondary)">고점 구간 (상위 25%)</span><span class="pos" style="font-weight:500">${Math.round(q75).toLocaleString()}원 이상</span></div><div style="margin-top:10px;padding:10px;background:var(--color-background-secondary);border-radius:8px;font-size:12px;font-weight:500;color:${buyColor};text-align:center">${buyZone}</div></div>`;
 }
 
-// ── 환율 가져오기 (실시간) ─────────────────────────────────────────
+// 환율 가져오기 (실시간 — API 두 개 순서대로 시도)
 async function fetchRate(){
-  document.getElementById('r-time').textContent = '환율 불러오는 중...';
-  
-  // API 1번 시도 → 실패하면 2번 시도
-  const apis = [
-    async () => {
-      const res = await fetch('https://open.er-api.com/v6/latest/USD?_='+Date.now());
-      const d = await res.json();
+  document.getElementById('r-time').textContent='환율 불러오는 중...';
+  const apis=[
+    async()=>{
+      const res=await fetch('https://open.er-api.com/v6/latest/USD?_='+Date.now());
+      const d=await res.json();
       return d.rates?.KRW;
     },
-    async () => {
-      const res = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json?_='+Date.now());
-      const d = await res.json();
+    async()=>{
+      const res=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json?_='+Date.now());
+      const d=await res.json();
       return d.usd?.krw;
     }
   ];
-
   for(const api of apis){
     try{
-      const krw = await api();
-      if(krw && krw > 0){
-        const prev = curRate;
-        curRate = Math.round(krw*100)/100;
-        const diff = (curRate-prev).toFixed(2);
-        document.getElementById('r-cur').textContent = curRate.toLocaleString('ko-KR',{minimumFractionDigits:2});
-        const b = document.getElementById('r-chg');
-        b.textContent = (parseFloat(diff)>=0?'+':'')+diff;
-        b.className = 'badge '+(parseFloat(diff)>0?'up':parseFloat(diff)<0?'dn':'neu');
-        const now = new Date();
-        document.getElementById('r-time').textContent = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+' 기준';
+      const krw=await api();
+      if(krw&&krw>0){
+        const prev=curRate;
+        curRate=Math.round(krw*100)/100;
+        const diff=(curRate-prev).toFixed(2);
+        document.getElementById('r-cur').textContent=curRate.toLocaleString('ko-KR',{minimumFractionDigits:2});
+        const b=document.getElementById('r-chg');
+        b.textContent=(parseFloat(diff)>=0?'+':'')+diff;
+        b.className='badge '+(parseFloat(diff)>0?'up':parseFloat(diff)<0?'dn':'neu');
+        const now=new Date();
+        document.getElementById('r-time').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+' 기준';
         renderCalc();
         return;
       }
-    }catch(e){ continue; }
+    }catch(e){continue;}
   }
-  document.getElementById('r-time').textContent = '환율 로드 실패 — 새로고침 해주세요';
+  document.getElementById('r-time').textContent='환율 로드 실패 — 새로고침 해주세요';
 }
 
 function refreshRate(btn){
-  const orig = btn.textContent;
-  btn.textContent = '⟳ 갱신중...';
-  btn.disabled = true;
-  fetchRate().finally(()=>{
-    btn.textContent = orig;
-    btn.disabled = false;
-  });
+  const orig=btn.textContent;
+  btn.textContent='⟳ 갱신중...';
+  btn.disabled=true;
+  fetchRate().finally(()=>{btn.textContent=orig;btn.disabled=false;});
 }
 
 buildTable();
 fetchRate();
-setInterval(fetchRate, 60000);
+setInterval(fetchRate,60000);
 </script>
 </body>
 </html>
