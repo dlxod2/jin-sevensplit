@@ -497,10 +497,26 @@ function renderChart(points){
     <div class="chart-box"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;font-weight:500;color:var(--color-text-primary)">USD/KRW ${chartMonths}개월 추이</span><span style="font-size:12px;color:${isCheap?'var(--color-text-success)':'var(--color-text-danger)'};font-weight:500">현재 ${cur.toLocaleString()}원</span></div>${svg}<div style="display:flex;gap:10px;margin-top:6px;font-size:10px;color:var(--color-text-secondary)"><span>— <span style="color:#3b82f6">환율</span></span><span>-- <span style="color:#f59e0b">평균</span></span><span>● <span style="${isCheap?'color:#22c55e':'color:#ef4444'}">${isCheap?'저점':'고점'}</span></span></div></div>
     <div class="stat-grid"><div class="stat-card"><div class="stat-label">최저가</div><div class="stat-val neg">${Math.min(...vals).toLocaleString()}</div></div><div class="stat-card"><div class="stat-label">평균가</div><div class="stat-val">${avgV.toLocaleString()}</div></div><div class="stat-card"><div class="stat-label">최고가</div><div class="stat-val pos">${Math.max(...vals).toLocaleString()}</div></div></div>
     <div class="guide-box"><div style="font-size:12px;font-weight:500;margin-bottom:8px">📊 적정 구매가 가이드</div><div class="guide-row"><span style="color:var(--color-text-secondary)">현재 환율</span><span style="font-weight:500">${cur.toLocaleString()}원</span></div><div class="guide-row"><span style="color:var(--color-text-secondary)">${chartMonths}개월 평균</span><span style="font-weight:500">${avgV.toLocaleString()}원</span></div><div class="guide-row"><span style="color:var(--color-text-secondary)">저점 구간 (하위 25%)</span><span class="neg" style="font-weight:500">${Math.round(q25).toLocaleString()}원 이하</span></div><div class="guide-row"><span style="color:var(--color-text-secondary)">고점 구간 (상위 25%)</span><span class="pos" style="font-weight:500">${Math.round(q75).toLocaleString()}원 이상</span></div><div style="margin-top:10px;padding:10px;background:var(--color-background-secondary);border-radius:8px;font-size:12px;font-weight:500;color:${buyColor};text-align:center">${buyZone}</div></div>`;
-}
 async function fetchRate(){
-  try{const res=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json'),d=await res.json(),krw=d.usd?.krw;
-    if(krw){curRate=Math.round(krw*100)/100;document.getElementById('r-cur').textContent=curRate.toLocaleString('ko-KR',{minimumFractionDigits:2});const now=new Date();document.getElementById('r-time').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+' 기준';renderCalc();}}catch(e){document.getElementById('r-time').textContent='환율 로드 실패';}
+  try{
+    const res=await fetch('https://open.er-api.com/v6/latest/USD');
+    const d=await res.json();
+    const krw=d.rates?.KRW;
+    if(krw){
+      const prev=curRate;
+      curRate=Math.round(krw*100)/100;
+      const diff=(curRate-prev).toFixed(2);
+      document.getElementById('r-cur').textContent=curRate.toLocaleString('ko-KR',{minimumFractionDigits:2});
+      const b=document.getElementById('r-chg');
+      b.textContent=(parseFloat(diff)>=0?'+':'')+diff;
+      b.className='badge '+(parseFloat(diff)>0?'up':parseFloat(diff)<0?'dn':'neu');
+      const now=new Date();
+      document.getElementById('r-time').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+' 기준';
+      renderCalc();
+    }
+  }catch(e){
+    document.getElementById('r-time').textContent='환율 로드 실패';
+  }
 }
 buildTable();fetchRate();setInterval(fetchRate,60000);
 </script>
