@@ -149,7 +149,7 @@ tr:last-child td{border-bottom:none}
     <div style="font-size:10px;color:var(--color-text-secondary);margin-top:2px" id="r-time">업데이트 중...</div>
   </div>
   <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-    <button class="xb" onclick="fetchRate()">새로고침</button>
+  <button class="xb" style="width:auto;padding:4px 10px;font-size:11px" onclick="fetchRate();this.textContent='⟳';setTimeout(()=>this.textContent='새로고침',1500)">새로고침</button>  
     <div style="font-size:10px;color:var(--color-text-secondary)" id="alarm-status">🔔 알람 대기중</div>
   </div>
 </div>
@@ -498,8 +498,9 @@ function renderChart(points){
     <div class="stat-grid"><div class="stat-card"><div class="stat-label">최저가</div><div class="stat-val neg">${Math.min(...vals).toLocaleString()}</div></div><div class="stat-card"><div class="stat-label">평균가</div><div class="stat-val">${avgV.toLocaleString()}</div></div><div class="stat-card"><div class="stat-label">최고가</div><div class="stat-val pos">${Math.max(...vals).toLocaleString()}</div></div></div>
     <div class="guide-box"><div style="font-size:12px;font-weight:500;margin-bottom:8px">📊 적정 구매가 가이드</div><div class="guide-row"><span style="color:var(--color-text-secondary)">현재 환율</span><span style="font-weight:500">${cur.toLocaleString()}원</span></div><div class="guide-row"><span style="color:var(--color-text-secondary)">${chartMonths}개월 평균</span><span style="font-weight:500">${avgV.toLocaleString()}원</span></div><div class="guide-row"><span style="color:var(--color-text-secondary)">저점 구간 (하위 25%)</span><span class="neg" style="font-weight:500">${Math.round(q25).toLocaleString()}원 이하</span></div><div class="guide-row"><span style="color:var(--color-text-secondary)">고점 구간 (상위 25%)</span><span class="pos" style="font-weight:500">${Math.round(q75).toLocaleString()}원 이상</span></div><div style="margin-top:10px;padding:10px;background:var(--color-background-secondary);border-radius:8px;font-size:12px;font-weight:500;color:${buyColor};text-align:center">${buyZone}</div></div>`;
 async function fetchRate(){
+  document.getElementById('r-time').textContent='환율 불러오는 중...';
   try{
-    const res=await fetch('https://open.er-api.com/v6/latest/USD');
+    const res=await fetch('https://open.er-api.com/v6/latest/USD?_='+Date.now());
     const d=await res.json();
     const krw=d.rates?.KRW;
     if(krw){
@@ -515,7 +516,7 @@ async function fetchRate(){
       renderCalc();
     }
   }catch(e){
-    document.getElementById('r-time').textContent='환율 로드 실패';
+    document.getElementById('r-time').textContent='환율 로드 실패 — 다시 시도해주세요';
   }
 }
 buildTable();fetchRate();setInterval(fetchRate,60000);
