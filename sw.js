@@ -1,9 +1,17 @@
+const CACHE_VERSION = 'v2';
+
 self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (e) => {
-  e.waitUntil(clients.claim());
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys.filter(k => k !== CACHE_VERSION).map(k => caches.delete(k))
+      )
+    ).then(() => clients.claim())
+  );
 });
 
 self.addEventListener('push', (e) => {
