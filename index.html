@@ -470,25 +470,40 @@ function renderChart(points){
 // ── 환율 가져오기 (실시간) ─────────────────────────────────────────
 async function fetchRate(){
   document.getElementById('r-time').textContent = '환율 불러오는 중...';
-  try {
-    const res = await fetch('https://open.er-api.com/v6/latest/USD?_='+Date.now());
-    const d = await res.json();
-    const krw = d.rates?.KRW;
-    if(krw){
-      const prev = curRate;
-      curRate = Math.round(krw*100)/100;
-      const diff = (curRate-prev).toFixed(2);
-      document.getElementById('r-cur').textContent = curRate.toLocaleString('ko-KR',{minimumFractionDigits:2});
-      const b = document.getElementById('r-chg');
-      b.textContent = (parseFloat(diff)>=0?'+':'')+diff;
-      b.className = 'badge '+(parseFloat(diff)>0?'up':parseFloat(diff)<0?'dn':'neu');
-      const now = new Date();
-      document.getElementById('r-time').textContent = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+' 기준';
-      renderCalc();
+  
+  // API 1번 시도 → 실패하면 2번 시도
+  const apis = [
+    async () => {
+      const res = await fetch('https://open.er-api.com/v6/latest/USD?_='+Date.now());
+      const d = await res.json();
+      return d.rates?.KRW;
+    },
+    async () => {
+      const res = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json?_='+Date.now());
+      const d = await res.json();
+      return d.usd?.krw;
     }
-  } catch(e) {
-    document.getElementById('r-time').textContent = '환율 로드 실패 — 다시 시도해주세요';
+  ];
+
+  for(const api of apis){
+    try{
+      const krw = await api();
+      if(krw && krw > 0){
+        const prev = curRate;
+        curRate = Math.round(krw*100)/100;
+        const diff = (curRate-prev).toFixed(2);
+        document.getElementById('r-cur').textContent = curRate.toLocaleString('ko-KR',{minimumFractionDigits:2});
+        const b = document.getElementById('r-chg');
+        b.textContent = (parseFloat(diff)>=0?'+':'')+diff;
+        b.className = 'badge '+(parseFloat(diff)>0?'up':parseFloat(diff)<0?'dn':'neu');
+        const now = new Date();
+        document.getElementById('r-time').textContent = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+' 기준';
+        renderCalc();
+        return;
+      }
+    }catch(e){ continue; }
   }
+  document.getElementById('r-time').textContent = '환율 로드 실패 — 새로고침 해주세요';
 }
 
 function refreshRate(btn){
