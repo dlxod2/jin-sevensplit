@@ -65,7 +65,7 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
 .nav-btn{flex:1;padding:8px;font-size:11px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;text-align:center}
 .nav-btn.active{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info)}
 .page{display:none}.page.show{display:block}
-.bank-row{display:flex;gap:0;margin-bottom:8px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;background:var(--color-background-primary)}
+.bank-row{display:flex;gap:0;margin-bottom:4px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;background:var(--color-background-primary)}
 .bk{flex:1;padding:8px 2px;border-right:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);cursor:pointer;text-align:center}
 .bk:last-child{border-right:none}
 .bk.sel{background:var(--color-background-info)}
@@ -74,6 +74,15 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
 .bk-tag{font-size:8px;padding:1px 3px;border-radius:3px;display:inline-block;margin-top:2px;letter-spacing:-0.5px}
 .best{background:var(--color-background-success);color:var(--color-text-success)}
 .good{background:var(--color-background-info);color:var(--color-text-info)}
+/* 보정값 박스 */
+.adj-box{background:var(--color-background-warning);border:0.5px solid var(--color-border-warning);border-radius:var(--border-radius-md);padding:8px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.adj-label{font-size:11px;color:var(--color-text-warning);flex:1;min-width:160px;line-height:1.4}
+.adj-input-wrap{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.adj-inp{width:64px;padding:5px 6px;border:0.5px solid var(--color-border-warning);border-radius:6px;font-size:13px;font-weight:600;background:var(--color-background-primary);color:var(--color-text-primary);text-align:center}
+.adj-unit{font-size:11px;color:var(--color-text-warning)}
+.adj-result{width:100%;font-size:11px;color:var(--color-text-secondary);padding-top:4px;border-top:0.5px solid var(--color-border-warning);margin-top:4px}
+.adj-result span{font-weight:600;color:var(--color-text-primary)}
+/* 설정 */
 .cfg{margin-bottom:8px;background:var(--color-background-primary);border-radius:var(--border-radius-md);padding:6px;border:0.5px solid var(--color-border-tertiary)}
 .cfg-row4{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
 .cfg-item{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
@@ -131,6 +140,7 @@ tr:last-child td{border-bottom:none}
 .ilv{font-weight:500;color:var(--color-text-primary);text-align:right}
 .lbtn{display:inline-block;font-size:12px;padding:6px 12px;border:0.5px solid var(--color-border-info);border-radius:6px;color:var(--color-text-info);text-decoration:none;margin-top:10px}
 .wbox{background:var(--color-background-warning);border:0.5px solid var(--color-border-warning);border-radius:var(--border-radius-md);padding:8px 10px;font-size:11px;color:var(--color-text-warning);margin-top:8px}
+.save-toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1a472a;color:#4ade80;border:1px solid #4ade80;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;display:none;z-index:999}
 </style>
 </head>
 <body>
@@ -162,6 +172,8 @@ tr:last-child td{border-bottom:none}
 </div>
 
 <div id="page-main" class="page show">
+
+  <!-- 은행 선택 -->
   <div class="bank-row">
     <div class="bk sel" id="bk0" onclick="selBank(0)"><span class="bk-name">토스뱅크</span><span class="bk-fee pos">0%</span><span class="bk-tag best">평생무료</span></div>
     <div class="bk" id="bk1" onclick="selBank(1)"><span class="bk-name">카카오뱅크</span><span class="bk-fee pos">0%</span><span class="bk-tag best">달러박스</span></div>
@@ -169,13 +181,24 @@ tr:last-child td{border-bottom:none}
     <div class="bk" id="bk3" onclick="selBank(3)"><span class="bk-name">직접입력</span><span class="bk-fee muted" id="cfd">-</span><span class="bk-tag neu">커스텀</span></div>
   </div>
 
+  <!-- 환율 보정값 -->
+  <div class="adj-box">
+    <span class="adj-label">📌 거래 은행과 환율 정보 차이를 보정하세요<br><span style="font-size:10px">앱 환율보다 내 은행이 높으면 +, 낮으면 −</span></span>
+    <div class="adj-input-wrap">
+      <input class="adj-inp" id="adj-val" type="number" value="0" step="0.1" onchange="saveAndCalc()">
+      <span class="adj-unit">원</span>
+    </div>
+    <div class="adj-result" id="adj-result"></div>
+  </div>
+
+  <!-- 설정 4칸 -->
   <div class="cfg">
     <div class="cfg-row4">
       <div class="cfg-item">
         <span class="cfg-lbl buy">📉 매수갭</span>
         <div class="cfg-spin">
           <div class="csb" onmousedown="scfg('buy-gap',-1,event)" onmouseup="ecfg(event)" ontouchstart="scfg('buy-gap',-1,event)" ontouchend="ecfg(event)" onmouseleave="ecfg(event)">−</div>
-          <input class="cfg-inp" id="buy-gap" type="number" value="-3" onchange="renderCalc()">
+          <input class="cfg-inp" id="buy-gap" type="number" value="-3" onchange="saveAndCalc()">
           <div class="csb" onmousedown="scfg('buy-gap',1,event)" onmouseup="ecfg(event)" ontouchstart="scfg('buy-gap',1,event)" ontouchend="ecfg(event)" onmouseleave="ecfg(event)">+</div>
         </div>
       </div>
@@ -183,7 +206,7 @@ tr:last-child td{border-bottom:none}
         <span class="cfg-lbl sell">📈 매도갭</span>
         <div class="cfg-spin">
           <div class="csb" onmousedown="scfg('sell-gap',-1,event)" onmouseup="ecfg(event)" ontouchstart="scfg('sell-gap',-1,event)" ontouchend="ecfg(event)" onmouseleave="ecfg(event)">−</div>
-          <input class="cfg-inp" id="sell-gap" type="number" value="5" onchange="renderCalc()">
+          <input class="cfg-inp" id="sell-gap" type="number" value="5" onchange="saveAndCalc()">
           <div class="csb" onmousedown="scfg('sell-gap',1,event)" onmouseup="ecfg(event)" ontouchstart="scfg('sell-gap',1,event)" ontouchend="ecfg(event)" onmouseleave="ecfg(event)">+</div>
         </div>
       </div>
@@ -191,14 +214,14 @@ tr:last-child td{border-bottom:none}
         <span class="cfg-lbl">↕ 매수간격</span>
         <div class="cfg-spin">
           <div class="csb" onmousedown="scfg('c-gap',-1,event)" onmouseup="ecfg(event)" ontouchstart="scfg('c-gap',-1,event)" ontouchend="ecfg(event)" onmouseleave="ecfg(event)">−</div>
-          <input class="cfg-inp" id="c-gap" type="number" value="3" min="1" onchange="renderCalc()">
+          <input class="cfg-inp" id="c-gap" type="number" value="3" min="1" onchange="saveAndCalc()">
           <div class="csb" onmousedown="scfg('c-gap',1,event)" onmouseup="ecfg(event)" ontouchstart="scfg('c-gap',1,event)" ontouchend="ecfg(event)" onmouseleave="ecfg(event)">+</div>
         </div>
       </div>
       <div class="cfg-item">
         <span class="cfg-lbl fee">💸 수수료</span>
         <div class="cfg-spin">
-          <input class="cfg-inp" id="c-fee" type="number" value="0" step="0.005" min="0" oninput="onFeeInput()" onchange="renderCalc()" style="width:100%">
+          <input class="cfg-inp" id="c-fee" type="number" value="0" step="0.005" min="0" oninput="onFeeInput()" onchange="saveAndCalc()" style="width:100%">
         </div>
         <span id="fee-tag" style="font-size:8px;padding:2px 4px;border-radius:3px;background:var(--color-background-success);color:var(--color-text-success);letter-spacing:-0.5px;white-space:nowrap">토스뱅크</span>
       </div>
@@ -261,10 +284,13 @@ tr:last-child td{border-bottom:none}
 </div>
 
 <div class="alarm-toast" id="alarm-toast"></div>
+<div class="save-toast" id="save-toast">💾 저장됨</div>
 </div>
 
 <script>
-let curRate=1380.0,accts=Array(10).fill(null).map(()=>({rate:'',qty:''})),selB=0,alarmFired={buy:{},sell:{}},chartMonths=3,chartDataCache={};
+// ── 전역 상태 ───────────────────────────────────────────────────────
+let curRate=1380.0, selB=0, alarmFired={buy:{},sell:{}}, chartMonths=3, chartDataCache={};
+
 const BANKS=[
   {fee:0,tag:'토스뱅크',cls:'background:var(--color-background-success);color:var(--color-text-success)'},
   {fee:0,tag:'카카오',cls:'background:var(--color-background-success);color:var(--color-text-success)'},
@@ -272,7 +298,61 @@ const BANKS=[
   {fee:0,tag:'직접입력',cls:'background:var(--color-background-secondary);color:var(--color-text-secondary)'},
 ];
 
-// AudioContext 모바일 잠금 해제
+// ── localStorage 저장/불러오기 ─────────────────────────────────────
+const LS_KEY = 'sevensplit_v1';
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch(e) { return null; }
+}
+
+function saveData() {
+  try {
+    const data = {
+      accts: accts,
+      selB: selB,
+      buyGap: document.getElementById('buy-gap').value,
+      sellGap: document.getElementById('sell-gap').value,
+      cGap: document.getElementById('c-gap').value,
+      fee: document.getElementById('c-fee').value,
+      adj: document.getElementById('adj-val').value,
+    };
+    localStorage.setItem(LS_KEY, JSON.stringify(data));
+    // 저장 토스트
+    const t = document.getElementById('save-toast');
+    t.style.display = 'block';
+    setTimeout(()=>t.style.display='none', 1200);
+  } catch(e) {}
+}
+
+function saveAndCalc() {
+  saveData();
+  updateAdjResult();
+  renderCalc();
+}
+
+// ── 보정값 결과 표시 ───────────────────────────────────────────────
+function getAdj() {
+  return parseFloat(document.getElementById('adj-val').value) || 0;
+}
+function effectiveRate() {
+  return Math.round((curRate + getAdj()) * 100) / 100;
+}
+function updateAdjResult() {
+  const adj = getAdj();
+  const eff = effectiveRate();
+  const el = document.getElementById('adj-result');
+  if (adj === 0) {
+    el.innerHTML = '보정 없음 — 앱 환율 그대로 사용';
+  } else {
+    el.innerHTML = `앱 환율 <span>${curRate.toLocaleString()}</span>원 ${adj>0?'+':''}${adj}원 = 보정 환율 <span>${eff.toLocaleString()}</span>원으로 알람 계산`;
+  }
+}
+
+// ── AudioContext 모바일 잠금 해제 ──────────────────────────────────
 let audioCtx=null;
 function _unlockAudio(){
   if(audioCtx)return;
@@ -293,7 +373,7 @@ document.addEventListener('touchstart',function(){
 },{once:true});
 document.addEventListener('click',function(){_unlockAudio();},{once:true});
 
-// 알람 소리
+// ── 알람 소리 ──────────────────────────────────────────────────────
 function _playAlarmSound(type){
   if(!audioCtx){try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return;}}
   if(audioCtx.state==='suspended')audioCtx.resume();
@@ -309,7 +389,7 @@ function _playAlarmSound(type){
   });
 }
 
-// 서비스워커 + 알림 권한
+// ── 서비스워커 + 알림 권한 ─────────────────────────────────────────
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/jin-sevensplit/sw.js')
     .then(()=>checkNotificationAuth())
@@ -342,7 +422,7 @@ function sendPush(title,body){
   }else{new Notification(title,opts);}
 }
 
-// 알람 발동
+// ── 알람 발동 (보정 환율 기준) ─────────────────────────────────────
 function fireAlarm(type,idx,rate){
   const key=String(idx);if(alarmFired[type][key])return;
   alarmFired[type][key]=true;
@@ -359,82 +439,136 @@ function fireAlarm(type,idx,rate){
 }
 function resetAlarms(){alarmFired={buy:{},sell:{}};document.getElementById('alarm-status').textContent='🔔 알람 대기중';}
 
-// 페이지/뱅크/설정
+// ── 페이지/뱅크/설정 ───────────────────────────────────────────────
 function goPage(p){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('show'));
   document.querySelectorAll('.nav-btn').forEach((el,i)=>el.classList.toggle('active',['main','chart','fee'][i]===p));
   document.getElementById('page-'+p).classList.add('show');
   if(p==='chart')loadChart();
 }
-function selBank(i){selB=i;for(let j=0;j<4;j++)document.getElementById('bk'+j).classList.toggle('sel',j===i);if(i!==3)document.getElementById('c-fee').value=BANKS[i].fee;updTag();renderCalc();}
-function onFeeInput(){selB=3;for(let j=0;j<4;j++)document.getElementById('bk'+j).classList.toggle('sel',j===3);document.getElementById('cfd').textContent=(parseFloat(document.getElementById('c-fee').value)||0)+'%';updTag();renderCalc();}
+function selBank(i){
+  selB=i;
+  for(let j=0;j<4;j++)document.getElementById('bk'+j).classList.toggle('sel',j===i);
+  if(i!==3)document.getElementById('c-fee').value=BANKS[i].fee;
+  updTag();saveAndCalc();
+}
+function onFeeInput(){
+  selB=3;
+  for(let j=0;j<4;j++)document.getElementById('bk'+j).classList.toggle('sel',j===3);
+  document.getElementById('cfd').textContent=(parseFloat(document.getElementById('c-fee').value)||0)+'%';
+  updTag();saveAndCalc();
+}
 function updTag(){const b=BANKS[selB],t=document.getElementById('fee-tag');t.textContent=b.tag;t.style.cssText=b.cls+';font-size:8px;padding:2px 4px;border-radius:3px;letter-spacing:-0.5px;white-space:nowrap';}
 let ct2=null,ci2=null;
-function scfg(id,d,e){e.preventDefault();const inp=document.getElementById(id);inp.value=(parseFloat(inp.value)||0)+d;renderCalc();ct2=setTimeout(()=>{ci2=setInterval(()=>{inp.value=(parseFloat(inp.value)||0)+d;renderCalc();},80);},400);}
+function scfg(id,d,e){
+  e.preventDefault();
+  const inp=document.getElementById(id);
+  inp.value=(parseFloat(inp.value)||0)+d;
+  saveAndCalc();
+  ct2=setTimeout(()=>{ci2=setInterval(()=>{inp.value=(parseFloat(inp.value)||0)+d;saveAndCalc();},80);},400);
+}
 function ecfg(e){if(e)e.preventDefault();clearTimeout(ct2);clearInterval(ci2);}
 const getGap=()=>parseFloat(document.getElementById('c-gap').value)||10;
 const getBuyGap=()=>parseFloat(document.getElementById('buy-gap').value)||(-5);
 const getSellGap=()=>parseFloat(document.getElementById('sell-gap').value)||5;
 const getFee=()=>parseFloat(document.getElementById('c-fee').value)||0;
 
-// 테이블
+// ── 계좌 데이터 ────────────────────────────────────────────────────
+let accts=Array(10).fill(null).map(()=>({rate:'',qty:''}));
+
+// ── 테이블 빌드 ────────────────────────────────────────────────────
 function buildTable(){
   document.getElementById('tbl').innerHTML=accts.map((a,i)=>{
-    const s=i===0?Math.round(curRate):(parseFloat(accts[i-1].rate)?Math.round(parseFloat(accts[i-1].rate)-getGap()):'');
+    const s=i===0?Math.round(effectiveRate()):(parseFloat(accts[i-1].rate)?Math.round(parseFloat(accts[i-1].rate)-getGap()):'');
     return `<tr><td><div style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">${i+1}</div>${i===0?'<div style="font-size:9px;color:var(--color-text-info)">메인</div>':''}</td>
-    <td><div class="rate-wrap"><div class="rb" ontouchstart="ss(${i},-1,event)" ontouchend="es(event)" onmousedown="ss(${i},-1,event)" onmouseup="es(event)" onmouseleave="es(event)">−</div>
-    <input class="ri" id="r${i}" type="number" value="${a.rate}" placeholder="${s}" onblur="sr(${i})">
-    <div class="rb" ontouchstart="ss(${i},1,event)" ontouchend="es(event)" onmousedown="ss(${i},1,event)" onmouseup="es(event)" onmouseleave="es(event)">+</div></div></td>
+    <td><div class="rate-wrap">
+      <div class="rb" ontouchstart="ss(${i},-1,event)" ontouchend="es(event)" onmousedown="ss(${i},-1,event)" onmouseup="es(event)" onmouseleave="es(event)">−</div>
+      <input class="ri" id="r${i}" type="number" value="${a.rate}" placeholder="${s}" onblur="sr(${i})">
+      <div class="rb" ontouchstart="ss(${i},1,event)" ontouchend="es(event)" onmousedown="ss(${i},1,event)" onmouseup="es(event)" onmouseleave="es(event)">+</div>
+    </div></td>
     <td><input class="qi" id="q${i}" type="number" value="${a.qty}" placeholder="1000" onblur="sq(${i})"></td>
     <td id="p${i}">-</td><td id="n${i}">-</td>
     <td><button class="xb" onclick="cl(${i})">✕</button></td></tr>`;
-  }).join('');renderCalc();
+  }).join('');
+  renderCalc();
 }
 
 function renderCalc(){
-  const cur=curRate,g=getGap(),bg=getBuyGap(),sg=getSellGap(),f=getFee();
+  // 보정 환율로 계산
+  const cur=effectiveRate(), g=getGap(), bg=getBuyGap(), sg=getSellGap(), f=getFee();
   let tP=0,tN=0,tF=0,tI=0,cnt=0,beLines='';
   accts.forEach((a,i)=>{
     const r=parseFloat(a.rate),q=parseFloat(a.qty),pe=document.getElementById('p'+i),ne=document.getElementById('n'+i);
     if(!pe||!ne)return;
     const s=i===0?Math.round(cur):(parseFloat(accts[i-1].rate)?Math.round(parseFloat(accts[i-1].rate)-g):'');
     if(r>0&&q>0){
-      const aB=r+bg,sT=r+sg,gr=Math.round((cur-r)*q),pc=((cur-r)/r*100),tf=f===0?0:Math.round(r*q*(f/100))+Math.round(cur*q*(f/100)),nt=gr-tf;
+      const aB=r+bg,sT=r+sg,gr=Math.round((cur-r)*q),pc=((cur-r)/r*100),
+            tf=f===0?0:Math.round(r*q*(f/100))+Math.round(cur*q*(f/100)),nt=gr-tf;
       const nS=f===0?Math.round((sT-r)*q):Math.round((sT-r)*q)-(Math.round(r*q*(f/100))+Math.round(sT*q*(f/100)));
       tP+=gr;tN+=nt;tF+=tf;tI+=Math.round(r*q);cnt++;
-      if(cur<=aB)fireAlarm('buy',i,aB);if(cur>=sT)fireAlarm('sell',i,sT);
+      if(cur<=aB)fireAlarm('buy',i,aB);
+      if(cur>=sT)fireAlarm('sell',i,sT);
       const gc=gr>=0?'pos':'neg',nc=nt>0?'pos':nt===0?'muted':'neg';
       pe.innerHTML=`<span class="${gc}" style="font-size:11px">${gr>=0?'+':''}${gr.toLocaleString()}<br><span style="font-size:10px">(${pc>=0?'+':''}${pc.toFixed(1)}%)</span></span>`;
-      ne.innerHTML=f===0?`<span class="${gc}" style="font-size:11px;font-weight:500">${gr>=0?'+':''}${gr.toLocaleString()}<br><span style="font-size:9px;color:var(--color-text-success)">수수료 0원</span></span>`:
-        `<span class="${nc}" style="font-size:11px;font-weight:500">${nt>=0?'+':''}${nt.toLocaleString()}<br><span style="font-size:9px;color:var(--color-text-secondary)">수수료 ${tf.toLocaleString()}원</span></span>`;
-      beLines+=`<div class="be-row"><span style="color:var(--color-text-secondary);font-weight:500;min-width:26px">${i+1}번</span>
+      ne.innerHTML=f===0
+        ?`<span class="${gc}" style="font-size:11px;font-weight:500">${gr>=0?'+':''}${gr.toLocaleString()}<br><span style="font-size:9px;color:var(--color-text-success)">수수료 0원</span></span>`
+        :`<span class="${nc}" style="font-size:11px;font-weight:500">${nt>=0?'+':''}${nt.toLocaleString()}<br><span style="font-size:9px;color:var(--color-text-secondary)">수수료 ${tf.toLocaleString()}원</span></span>`;
+      beLines+=`<div class="be-row">
+        <span style="color:var(--color-text-secondary);font-weight:500;min-width:26px">${i+1}번</span>
         <span style="color:var(--color-text-danger)">매수 ${aB.toLocaleString()} <span class="${cur<=aB?'pos':'muted'}">${cur<=aB?'✓':''}</span></span>
         <span style="color:var(--color-text-success)">매도 ${sT.toLocaleString()} <span class="${cur>=sT?'pos':'muted'}">${cur>=sT?'✓익절!':''}</span></span>
-        <span class="pos" style="font-size:10px">+${nS.toLocaleString()}원</span></div>`;
+        <span class="pos" style="font-size:10px">+${nS.toLocaleString()}원</span>
+      </div>`;
     }else{
       pe.innerHTML=`<span class="muted" style="font-size:10px">${s?s.toLocaleString()+'<br><span style="font-size:9px">추천가</span>':'-'}</span>`;
       ne.innerHTML='<span class="muted">-</span>';
     }
   });
-  document.getElementById('tft').innerHTML=cnt>0?`<tr class="total-row"><td colspan="2" style="text-align:left;padding-left:8px;font-size:10px">${cnt}계좌/${Math.round(tI/10000)}만원</td><td></td><td class="${tP>=0?'pos':'neg'}" style="font-size:10px">${tP>=0?'+':''}${tP.toLocaleString()}</td><td class="${tN>0?'pos':tN===0?'muted':'neg'}" style="font-size:10px;font-weight:500">${tN>=0?'+':''}${tN.toLocaleString()}</td><td></td></tr>`:'';
+  document.getElementById('tft').innerHTML=cnt>0
+    ?`<tr class="total-row"><td colspan="2" style="text-align:left;padding-left:8px;font-size:10px">${cnt}계좌/${Math.round(tI/10000)}만원</td><td></td><td class="${tP>=0?'pos':'neg'}" style="font-size:10px">${tP>=0?'+':''}${tP.toLocaleString()}</td><td class="${tN>0?'pos':tN===0?'muted':'neg'}" style="font-size:10px;font-weight:500">${tN>=0?'+':''}${tN.toLocaleString()}</td><td></td></tr>`
+    :'';
   if(cnt>0){
-    document.getElementById('isum').innerHTML=`<div class="ibox"><div class="irow"><span>총 수수료</span><span style="font-weight:500;color:var(--color-text-warning)">${f===0?'무료 (0원)':'−'+tF.toLocaleString()+'원'}</span></div><div class="irow"><span>실제 순수익</span><span class="${tN>=0?'pos':'neg'}" style="font-weight:500">${tN>=0?'+':''}${tN.toLocaleString()}원</span></div></div>`;
-    document.getElementById('bebox').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><span style="font-size:11px;color:var(--color-text-secondary);font-weight:500">목표가 알람 (매수${bg>0?'+':''}${bg}/매도+${sg}원)</span><button class="xb" onclick="resetAlarms()">알람초기화</button></div><div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 12px">${beLines}</div>`;
-  }else{document.getElementById('isum').innerHTML='';document.getElementById('bebox').innerHTML='';}
+    document.getElementById('isum').innerHTML=`<div class="ibox">
+      <div class="irow"><span>총 수수료</span><span style="font-weight:500;color:var(--color-text-warning)">${f===0?'무료 (0원)':'−'+tF.toLocaleString()+'원'}</span></div>
+      <div class="irow"><span>실제 순수익</span><span class="${tN>=0?'pos':'neg'}" style="font-weight:500">${tN>=0?'+':''}${tN.toLocaleString()}원</span></div>
+    </div>`;
+    document.getElementById('bebox').innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+        <span style="font-size:11px;color:var(--color-text-secondary);font-weight:500">목표가 알람 (매수${bg>0?'+':''}${bg}/매도+${sg}원)</span>
+        <button class="xb" onclick="resetAlarms()">알람초기화</button>
+      </div>
+      <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 12px">${beLines}</div>`;
+  }else{
+    document.getElementById('isum').innerHTML='';
+    document.getElementById('bebox').innerHTML='';
+  }
 }
 
-function sr(i){accts[i].rate=document.getElementById('r'+i).value;resetAlarms();renderCalc();}
-function sq(i){accts[i].qty=document.getElementById('q'+i).value;renderCalc();}
-function sp(i,d){const inp=document.getElementById('r'+i),v=Math.max(0,(parseFloat(inp.value)||parseFloat(inp.placeholder)||0)+d);inp.value=v;accts[i].rate=String(v);resetAlarms();renderCalc();}
+function sr(i){accts[i].rate=document.getElementById('r'+i).value;resetAlarms();saveAndCalc();}
+function sq(i){accts[i].qty=document.getElementById('q'+i).value;saveAndCalc();}
+function sp(i,d){
+  const inp=document.getElementById('r'+i);
+  const v=Math.max(0,(parseFloat(inp.value)||parseFloat(inp.placeholder)||0)+d);
+  inp.value=v;accts[i].rate=String(v);resetAlarms();saveAndCalc();
+}
 let st=null,si=null;
 function ss(i,d,e){e.preventDefault();sp(i,d);st=setTimeout(()=>{si=setInterval(()=>sp(i,d),80);},400);}
 function es(e){if(e)e.preventDefault();clearTimeout(st);clearInterval(si);}
-function cl(i){accts[i]={rate:'',qty:''};const ri=document.getElementById('r'+i),qi=document.getElementById('q'+i);if(ri)ri.value='';if(qi)qi.value='';resetAlarms();renderCalc();}
+function cl(i){
+  accts[i]={rate:'',qty:''};
+  const ri=document.getElementById('r'+i),qi=document.getElementById('q'+i);
+  if(ri)ri.value='';if(qi)qi.value='';
+  resetAlarms();saveAndCalc();
+}
 
-// 차트
+// ── 차트 ───────────────────────────────────────────────────────────
 function selChart(m){chartMonths=m;document.querySelectorAll('.ct').forEach((el,i)=>el.classList.toggle('active',[3,6,12][i]===m));loadChart();}
 function fmtDate(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-async function fetchHistorical(ds){if(chartDataCache[ds])return chartDataCache[ds];try{const res=await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${ds}/v1/currencies/usd.json`),d=await res.json(),v=Math.round((d.usd?.krw||0)*100)/100;chartDataCache[ds]=v;return v;}catch(e){return null;}}
+async function fetchHistorical(ds){
+  if(chartDataCache[ds])return chartDataCache[ds];
+  try{const res=await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${ds}/v1/currencies/usd.json`),d=await res.json(),v=Math.round((d.usd?.krw||0)*100)/100;chartDataCache[ds]=v;return v;}
+  catch(e){return null;}
+}
 async function loadChart(){
   document.getElementById('chart-area').innerHTML='<div class="loading">📡 '+chartMonths+'개월 환율 데이터 로딩 중...</div>';
   const today=new Date(),totalDays=chartMonths*30,step=Math.max(1,Math.floor(totalDays/24)),dates=[];
@@ -465,20 +599,12 @@ function renderChart(points){
     <div class="guide-box"><div style="font-size:12px;font-weight:500;margin-bottom:8px">📊 적정 구매가 가이드</div><div class="guide-row"><span style="color:var(--color-text-secondary)">현재 환율</span><span style="font-weight:500">${cur.toLocaleString()}원</span></div><div class="guide-row"><span style="color:var(--color-text-secondary)">${chartMonths}개월 평균</span><span style="font-weight:500">${avgV.toLocaleString()}원</span></div><div class="guide-row"><span style="color:var(--color-text-secondary)">저점 구간 (하위 25%)</span><span class="neg" style="font-weight:500">${Math.round(q25).toLocaleString()}원 이하</span></div><div class="guide-row"><span style="color:var(--color-text-secondary)">고점 구간 (상위 25%)</span><span class="pos" style="font-weight:500">${Math.round(q75).toLocaleString()}원 이상</span></div><div style="margin-top:10px;padding:10px;background:var(--color-background-secondary);border-radius:8px;font-size:12px;font-weight:500;color:${buyColor};text-align:center">${buyZone}</div></div>`;
 }
 
-// 환율 가져오기 (실시간 — API 두 개 순서대로 시도)
+// ── 환율 가져오기 ──────────────────────────────────────────────────
 async function fetchRate(){
   document.getElementById('r-time').textContent='환율 불러오는 중...';
   const apis=[
-    async()=>{
-      const res=await fetch('https://open.er-api.com/v6/latest/USD?_='+Date.now());
-      const d=await res.json();
-      return d.rates?.KRW;
-    },
-    async()=>{
-      const res=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json?_='+Date.now());
-      const d=await res.json();
-      return d.usd?.krw;
-    }
+    async()=>{const res=await fetch('https://open.er-api.com/v6/latest/USD?_='+Date.now());const d=await res.json();return d.rates?.KRW;},
+    async()=>{const res=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json?_='+Date.now());const d=await res.json();return d.usd?.krw;}
   ];
   for(const api of apis){
     try{
@@ -493,6 +619,7 @@ async function fetchRate(){
         b.className='badge '+(parseFloat(diff)>0?'up':parseFloat(diff)<0?'dn':'neu');
         const now=new Date();
         document.getElementById('r-time').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+' 기준';
+        updateAdjResult();
         renderCalc();
         return;
       }
@@ -500,17 +627,34 @@ async function fetchRate(){
   }
   document.getElementById('r-time').textContent='환율 로드 실패 — 새로고침 해주세요';
 }
-
 function refreshRate(btn){
-  const orig=btn.textContent;
-  btn.textContent='⟳ 갱신중...';
-  btn.disabled=true;
+  const orig=btn.textContent;btn.textContent='⟳ 갱신중...';btn.disabled=true;
   fetchRate().finally(()=>{btn.textContent=orig;btn.disabled=false;});
 }
 
-buildTable();
-fetchRate();
-setInterval(fetchRate,60000);
+// ── 초기화 — 저장된 데이터 복원 ───────────────────────────────────
+function init(){
+  const saved=loadData();
+  if(saved){
+    if(saved.accts) accts=saved.accts;
+    if(saved.buyGap !== undefined) document.getElementById('buy-gap').value=saved.buyGap;
+    if(saved.sellGap !== undefined) document.getElementById('sell-gap').value=saved.sellGap;
+    if(saved.cGap !== undefined) document.getElementById('c-gap').value=saved.cGap;
+    if(saved.fee !== undefined) document.getElementById('c-fee').value=saved.fee;
+    if(saved.adj !== undefined) document.getElementById('adj-val').value=saved.adj;
+    if(saved.selB !== undefined){
+      selB=saved.selB;
+      for(let j=0;j<4;j++) document.getElementById('bk'+j).classList.toggle('sel',j===selB);
+      updTag();
+    }
+  }
+  buildTable();
+  updateAdjResult();
+  fetchRate();
+  setInterval(fetchRate,60000);
+}
+
+init();
 </script>
 </body>
 </html>
