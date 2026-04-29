@@ -74,26 +74,26 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
 .bk-tag{font-size:8px;padding:1px 3px;border-radius:3px;display:inline-block;margin-top:2px;letter-spacing:-0.5px}
 .best{background:var(--color-background-success);color:var(--color-text-success)}
 .good{background:var(--color-background-info);color:var(--color-text-info)}
-/* 보정값 박스 */
-.adj-box{background:var(--color-background-warning);border:0.5px solid var(--color-border-warning);border-radius:var(--border-radius-md);padding:8px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.adj-box{background:var(--color-background-warning);border:0.5px solid var(--color-border-warning);border-radius:var(--border-radius-md);padding:8px 10px;margin-bottom:8px}
+.adj-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .adj-label{font-size:11px;color:var(--color-text-warning);flex:1;min-width:160px;line-height:1.4}
 .adj-input-wrap{display:flex;align-items:center;gap:4px;flex-shrink:0}
-.adj-inp{width:64px;padding:5px 6px;border:0.5px solid var(--color-border-warning);border-radius:6px;font-size:13px;font-weight:600;background:var(--color-background-primary);color:var(--color-text-primary);text-align:center}
+.adj-csb{width:26px;height:30px;border:0.5px solid var(--color-border-warning);border-radius:5px;background:var(--color-background-primary);cursor:pointer;font-size:15px;color:var(--color-text-warning);display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.adj-csb:active{background:var(--color-background-warning)}
+.adj-inp{width:60px;padding:5px 4px;border:0.5px solid var(--color-border-warning);border-radius:6px;font-size:13px;font-weight:600;background:var(--color-background-primary);color:var(--color-text-primary);text-align:center}
 .adj-unit{font-size:11px;color:var(--color-text-warning)}
-.adj-result{width:100%;font-size:11px;color:var(--color-text-secondary);padding-top:4px;border-top:0.5px solid var(--color-border-warning);margin-top:4px}
+.adj-result{font-size:11px;color:var(--color-text-secondary);padding-top:5px;border-top:0.5px solid var(--color-border-warning);margin-top:5px}
 .adj-result span{font-weight:600;color:var(--color-text-primary)}
-/* 설정 */
 .cfg{margin-bottom:8px;background:var(--color-background-primary);border-radius:var(--border-radius-md);padding:6px;border:0.5px solid var(--color-border-tertiary)}
-.cfg-row4{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.cfg-row3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
 .cfg-item{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
 .cfg-lbl{font-size:9px;color:var(--color-text-secondary);text-align:center;white-space:nowrap;letter-spacing:-0.5px}
 .cfg-lbl.buy{color:var(--color-text-danger)}
 .cfg-lbl.sell{color:var(--color-text-success)}
-.cfg-lbl.fee{color:var(--color-text-warning)}
 .cfg-spin{display:flex;align-items:center;gap:1px;width:100%}
-.csb{width:18px;height:24px;border:0.5px solid var(--color-border-secondary);border-radius:4px;background:var(--color-background-secondary);cursor:pointer;font-size:13px;color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.csb{width:20px;height:26px;border:0.5px solid var(--color-border-secondary);border-radius:4px;background:var(--color-background-secondary);cursor:pointer;font-size:14px;color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-user-select:none;user-select:none;touch-action:manipulation}
 .csb:active{background:var(--color-background-info);color:var(--color-text-info)}
-.cfg-inp{flex:1;min-width:0;padding:2px 0;border:0.5px solid var(--color-border-secondary);border-radius:4px;font-size:11px;background:var(--color-background-primary);color:var(--color-text-primary);text-align:center}
+.cfg-inp{flex:1;min-width:0;padding:3px 0;border:0.5px solid var(--color-border-secondary);border-radius:4px;font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary);text-align:center}
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]{-moz-appearance:textfield}
@@ -105,7 +105,7 @@ tr:last-child td{border-bottom:none}
 .rb{width:30px;height:30px;border:0.5px solid var(--color-border-secondary);border-radius:6px;background:var(--color-background-secondary);cursor:pointer;font-size:18px;font-weight:300;color:var(--color-text-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-user-select:none;user-select:none;touch-action:manipulation}
 .rb:active{background:var(--color-background-info);color:var(--color-text-info)}
 .ri{width:64px;padding:6px 2px;border:0.5px solid var(--color-border-secondary);border-radius:6px;font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary);text-align:center}
-.qi{width:48px;padding:6px 2px;border:0.5px solid var(--color-border-secondary);border-radius:6px;font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary);text-align:center}
+.qi{width:52px;padding:6px 2px;border:0.5px solid var(--color-border-secondary);border-radius:6px;font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary);text-align:center}
 .pos{color:var(--color-text-success)}
 .neg{color:var(--color-text-danger)}
 .muted{color:var(--color-text-secondary)}
@@ -140,7 +140,7 @@ tr:last-child td{border-bottom:none}
 .ilv{font-weight:500;color:var(--color-text-primary);text-align:right}
 .lbtn{display:inline-block;font-size:12px;padding:6px 12px;border:0.5px solid var(--color-border-info);border-radius:6px;color:var(--color-text-info);text-decoration:none;margin-top:10px}
 .wbox{background:var(--color-background-warning);border:0.5px solid var(--color-border-warning);border-radius:var(--border-radius-md);padding:8px 10px;font-size:11px;color:var(--color-text-warning);margin-top:8px}
-.save-toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1a472a;color:#4ade80;border:1px solid #4ade80;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;display:none;z-index:999}
+.save-toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1a472a;color:#4ade80;border:1px solid #4ade80;padding:8px 18px;border-radius:20px;font-size:12px;font-weight:500;display:none;z-index:999}
 </style>
 </head>
 <body>
@@ -173,7 +173,6 @@ tr:last-child td{border-bottom:none}
 
 <div id="page-main" class="page show">
 
-  <!-- 은행 선택 -->
   <div class="bank-row">
     <div class="bk sel" id="bk0" onclick="selBank(0)"><span class="bk-name">토스뱅크</span><span class="bk-fee pos">0%</span><span class="bk-tag best">평생무료</span></div>
     <div class="bk" id="bk1" onclick="selBank(1)"><span class="bk-name">카카오뱅크</span><span class="bk-fee pos">0%</span><span class="bk-tag best">달러박스</span></div>
@@ -183,19 +182,23 @@ tr:last-child td{border-bottom:none}
 
   <!-- 환율 보정값 -->
   <div class="adj-box">
-    <span class="adj-label">📌 거래 은행과 환율 정보 차이를 보정하세요<br><span style="font-size:10px">앱 환율보다 내 은행이 높으면 +, 낮으면 −</span></span>
-    <div class="adj-input-wrap">
-      <input class="adj-inp" id="adj-val" type="number" value="0" step="0.1" onchange="resetAlarms();saveAndCalc()">
-      <span class="adj-unit">원</span>
+    <div class="adj-top">
+      <span class="adj-label">📌 거래 은행과 환율 차이를 보정하세요<br><span style="font-size:10px">앱보다 내 은행이 높으면 +, 낮으면 −</span></span>
+      <div class="adj-input-wrap">
+        <div class="adj-csb" onmousedown="spinAdj(-0.1,event)" onmouseup="stopAdj(event)" ontouchstart="spinAdj(-0.1,event)" ontouchend="stopAdj(event)" onmouseleave="stopAdj(event)">−</div>
+        <input class="adj-inp" id="adj-val" type="number" value="0" step="0.1" onchange="onAdjChange()">
+        <div class="adj-csb" onmousedown="spinAdj(0.1,event)" onmouseup="stopAdj(event)" ontouchstart="spinAdj(0.1,event)" ontouchend="stopAdj(event)" onmouseleave="stopAdj(event)">+</div>
+        <span class="adj-unit">원</span>
+      </div>
     </div>
-    <div class="adj-result" id="adj-result"></div>
+    <div class="adj-result" id="adj-result">보정값을 입력하면 알람이 정확해져요</div>
   </div>
 
-  <!-- 설정 4칸 -->
+  <!-- 설정 3칸 (수수료 제거) -->
   <div class="cfg">
-    <div class="cfg-row4">
+    <div class="cfg-row3">
       <div class="cfg-item">
-        <span class="cfg-lbl buy">📉 매수갭</span>
+        <span class="cfg-lbl buy">📉 매수 갭 (원)</span>
         <div class="cfg-spin">
           <div class="csb" onmousedown="scfg('buy-gap',-1,event)" onmouseup="ecfg(event)" ontouchstart="scfg('buy-gap',-1,event)" ontouchend="ecfg(event)" onmouseleave="ecfg(event)">−</div>
           <input class="cfg-inp" id="buy-gap" type="number" value="-3" onchange="saveAndCalc()">
@@ -203,7 +206,7 @@ tr:last-child td{border-bottom:none}
         </div>
       </div>
       <div class="cfg-item">
-        <span class="cfg-lbl sell">📈 매도갭</span>
+        <span class="cfg-lbl sell">📈 매도 갭 (원)</span>
         <div class="cfg-spin">
           <div class="csb" onmousedown="scfg('sell-gap',-1,event)" onmouseup="ecfg(event)" ontouchstart="scfg('sell-gap',-1,event)" ontouchend="ecfg(event)" onmouseleave="ecfg(event)">−</div>
           <input class="cfg-inp" id="sell-gap" type="number" value="5" onchange="saveAndCalc()">
@@ -211,19 +214,12 @@ tr:last-child td{border-bottom:none}
         </div>
       </div>
       <div class="cfg-item">
-        <span class="cfg-lbl">↕ 매수간격</span>
+        <span class="cfg-lbl">↕ 매수 간격 (원)</span>
         <div class="cfg-spin">
           <div class="csb" onmousedown="scfg('c-gap',-1,event)" onmouseup="ecfg(event)" ontouchstart="scfg('c-gap',-1,event)" ontouchend="ecfg(event)" onmouseleave="ecfg(event)">−</div>
           <input class="cfg-inp" id="c-gap" type="number" value="3" min="1" onchange="saveAndCalc()">
           <div class="csb" onmousedown="scfg('c-gap',1,event)" onmouseup="ecfg(event)" ontouchstart="scfg('c-gap',1,event)" ontouchend="ecfg(event)" onmouseleave="ecfg(event)">+</div>
         </div>
-      </div>
-      <div class="cfg-item">
-        <span class="cfg-lbl fee">💸 수수료</span>
-        <div class="cfg-spin">
-          <input class="cfg-inp" id="c-fee" type="number" value="0" step="0.005" min="0" oninput="onFeeInput()" onchange="saveAndCalc()" style="width:100%">
-        </div>
-        <span id="fee-tag" style="font-size:8px;padding:2px 4px;border-radius:3px;background:var(--color-background-success);color:var(--color-text-success);letter-spacing:-0.5px;white-space:nowrap">토스뱅크</span>
       </div>
     </div>
   </div>
@@ -235,8 +231,7 @@ tr:last-child td{border-bottom:none}
       <th style="width:24px">No</th>
       <th>매수환율 (원)</th>
       <th>수량 ($)</th>
-      <th>손익</th>
-      <th>실수익</th>
+      <th>손익 (원)</th>
       <th style="width:30px"></th>
     </tr></thead>
     <tbody id="tbl"></tbody>
@@ -288,71 +283,71 @@ tr:last-child td{border-bottom:none}
 </div>
 
 <script>
-// ── 전역 상태 ───────────────────────────────────────────────────────
-let curRate=1380.0, selB=0, alarmFired={buy:{},sell:{}}, chartMonths=3, chartDataCache={};
-
+// ── 전역 ───────────────────────────────────────────────────────────
+let curRate=1380.0, selB=0, alarmFired={buy:{},sell:{}};
+let chartMonths=3, chartDataCache={};
+let accts=Array(10).fill(null).map(()=>({rate:'',qty:''}));
 const BANKS=[
-  {fee:0,tag:'토스뱅크',cls:'background:var(--color-background-success);color:var(--color-text-success)'},
-  {fee:0,tag:'카카오',cls:'background:var(--color-background-success);color:var(--color-text-success)'},
-  {fee:0,tag:'KB국민',cls:'background:var(--color-background-info);color:var(--color-text-info)'},
-  {fee:0,tag:'직접입력',cls:'background:var(--color-background-secondary);color:var(--color-text-secondary)'},
+  {tag:'토스뱅크',cls:'background:var(--color-background-success);color:var(--color-text-success)'},
+  {tag:'카카오',cls:'background:var(--color-background-success);color:var(--color-text-success)'},
+  {tag:'KB국민',cls:'background:var(--color-background-info);color:var(--color-text-info)'},
+  {tag:'직접입력',cls:'background:var(--color-background-secondary);color:var(--color-text-secondary)'},
 ];
 
-// ── localStorage 저장/불러오기 ─────────────────────────────────────
-const LS_KEY = 'sevensplit_v1';
+// ── localStorage ───────────────────────────────────────────────────
+const LS='sevensplit_v2';
+function loadData(){
+  try{const r=localStorage.getItem(LS);return r?JSON.parse(r):null;}catch(e){return null;}
+}
+function saveData(){
+  try{
+    localStorage.setItem(LS,JSON.stringify({
+      accts,selB,
+      buyGap:document.getElementById('buy-gap').value,
+      sellGap:document.getElementById('sell-gap').value,
+      cGap:document.getElementById('c-gap').value,
+      adj:document.getElementById('adj-val').value,
+    }));
+    const t=document.getElementById('save-toast');
+    t.style.display='block';setTimeout(()=>t.style.display='none',1200);
+  }catch(e){}
+}
+function saveAndCalc(){saveData();renderCalc();}
 
-function loadData() {
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw);
-  } catch(e) { return null; }
-}
+// ── 보정값 ─────────────────────────────────────────────────────────
+function getAdj(){return parseFloat(document.getElementById('adj-val').value)||0;}
+function effectiveRate(){return Math.round((curRate+getAdj())*100)/100;}
 
-function saveData() {
-  try {
-    const data = {
-      accts: accts,
-      selB: selB,
-      buyGap: document.getElementById('buy-gap').value,
-      sellGap: document.getElementById('sell-gap').value,
-      cGap: document.getElementById('c-gap').value,
-      fee: document.getElementById('c-fee').value,
-      adj: document.getElementById('adj-val').value,
-    };
-    localStorage.setItem(LS_KEY, JSON.stringify(data));
-    // 저장 토스트
-    const t = document.getElementById('save-toast');
-    t.style.display = 'block';
-    setTimeout(()=>t.style.display='none', 1200);
-  } catch(e) {}
-}
-
-function saveAndCalc() {
-  saveData();
-  updateAdjResult();
-  renderCalc();
-}
-
-// ── 보정값 결과 표시 ───────────────────────────────────────────────
-function getAdj() {
-  return parseFloat(document.getElementById('adj-val').value) || 0;
-}
-function effectiveRate() {
-  return Math.round((curRate + getAdj()) * 100) / 100;
-}
-function updateAdjResult() {
-  const adj = getAdj();
-  const eff = effectiveRate();
-  const el = document.getElementById('adj-result');
-  if (adj === 0) {
-    el.innerHTML = '보정 없음 — 앱 환율 그대로 사용';
-  } else {
-    el.innerHTML = `앱 환율 <span>${curRate.toLocaleString()}</span>원 ${adj>0?'+':''}${adj}원 = 보정 환율 <span>${eff.toLocaleString()}</span>원으로 알람 계산`;
+function updateAdjResult(){
+  const adj=getAdj(), eff=effectiveRate(), el=document.getElementById('adj-result');
+  if(adj===0){
+    el.textContent='보정 없음 — 앱 환율 그대로 사용';
+  }else{
+    el.innerHTML=`앱 환율 <span>${curRate.toLocaleString()}</span>원 ${adj>0?'+':''}${adj}원 → 알람 기준 <span>${eff.toLocaleString()}</span>원`;
   }
 }
 
-// ── AudioContext 모바일 잠금 해제 ──────────────────────────────────
+// 보정값 변경 시: 알람 초기화 → 저장 → 재계산
+function onAdjChange(){
+  alarmFired={buy:{},sell:{}};
+  document.getElementById('alarm-status').textContent='🔔 알람 대기중';
+  updateAdjResult();
+  saveData();
+  renderCalc();
+}
+
+// 보정값 스핀
+let adjT=null,adjI=null;
+function spinAdj(d,e){
+  e.preventDefault();
+  const inp=document.getElementById('adj-val');
+  inp.value=Math.round((parseFloat(inp.value||0)+d)*10)/10;
+  onAdjChange();
+  adjT=setTimeout(()=>{adjI=setInterval(()=>{inp.value=Math.round((parseFloat(inp.value||0)+d)*10)/10;onAdjChange();},80);},400);
+}
+function stopAdj(e){if(e)e.preventDefault();clearTimeout(adjT);clearInterval(adjI);}
+
+// ── AudioContext ────────────────────────────────────────────────────
 let audioCtx=null;
 function _unlockAudio(){
   if(audioCtx)return;
@@ -373,7 +368,6 @@ document.addEventListener('touchstart',function(){
 },{once:true});
 document.addEventListener('click',function(){_unlockAudio();},{once:true});
 
-// ── 알람 소리 ──────────────────────────────────────────────────────
 function _playAlarmSound(type){
   if(!audioCtx){try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return;}}
   if(audioCtx.state==='suspended')audioCtx.resume();
@@ -389,11 +383,10 @@ function _playAlarmSound(type){
   });
 }
 
-// ── 서비스워커 + 알림 권한 ─────────────────────────────────────────
+// ── 알림 권한 ──────────────────────────────────────────────────────
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/jin-sevensplit/sw.js')
-    .then(()=>checkNotificationAuth())
-    .catch(()=>checkNotificationAuth());
+    .then(()=>checkNotificationAuth()).catch(()=>checkNotificationAuth());
 }else{checkNotificationAuth();}
 
 function checkNotificationAuth(){
@@ -401,28 +394,24 @@ function checkNotificationAuth(){
   if(typeof Notification==='undefined')return;
   if(Notification.permission==='default'){
     btn.style.display='block';
-    btn.onclick=()=>{
-      Notification.requestPermission().then(p=>{
-        if(p==='granted'){btn.style.display='none';}
-        else{btn.textContent='🔕 알림 차단됨 — 브라우저 설정에서 허용해주세요';btn.style.background='#dc2626';btn.onclick=null;}
-      });
-    };
+    btn.onclick=()=>Notification.requestPermission().then(p=>{
+      if(p==='granted'){btn.style.display='none';}
+      else{btn.textContent='🔕 알림 차단됨 — 브라우저 설정에서 허용해주세요';btn.style.background='#dc2626';btn.onclick=null;}
+    });
   }else if(Notification.permission==='denied'){
-    btn.style.display='block';
-    btn.textContent='🔕 알림 차단됨 — 브라우저 설정에서 허용해주세요';
+    btn.style.display='block';btn.textContent='🔕 알림 차단됨 — 브라우저 설정에서 허용해주세요';
     btn.style.background='#dc2626';btn.onclick=null;
   }
 }
-
 function sendPush(title,body){
   if(typeof Notification==='undefined'||Notification.permission!=='granted')return;
-  const opts={body,icon:'https://dlxod2.github.io/jin-sevensplit/favicon.ico',vibrate:[200,100,200],tag:'price-alert',requireInteraction:false};
+  const opts={body,icon:'https://dlxod2.github.io/jin-sevensplit/favicon.ico',vibrate:[200,100,200],tag:'price-alert'};
   if('serviceWorker' in navigator){
     navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,opts)).catch(()=>new Notification(title,opts));
   }else{new Notification(title,opts);}
 }
 
-// ── 알람 발동 (보정 환율 기준) ─────────────────────────────────────
+// ── 알람 발동 ──────────────────────────────────────────────────────
 function fireAlarm(type,idx,rate){
   const key=String(idx);if(alarmFired[type][key])return;
   alarmFired[type][key]=true;
@@ -437,7 +426,10 @@ function fireAlarm(type,idx,rate){
   sendPush(title,body);
   document.getElementById('alarm-status').textContent='🔔 알람 발생!';
 }
-function resetAlarms(){alarmFired={buy:{},sell:{}};document.getElementById('alarm-status').textContent='🔔 알람 대기중';}
+function resetAlarms(){
+  alarmFired={buy:{},sell:{}};
+  document.getElementById('alarm-status').textContent='🔔 알람 대기중';
+}
 
 // ── 페이지/뱅크/설정 ───────────────────────────────────────────────
 function goPage(p){
@@ -446,95 +438,75 @@ function goPage(p){
   document.getElementById('page-'+p).classList.add('show');
   if(p==='chart')loadChart();
 }
-function selBank(i){
-  selB=i;
-  for(let j=0;j<4;j++)document.getElementById('bk'+j).classList.toggle('sel',j===i);
-  if(i!==3)document.getElementById('c-fee').value=BANKS[i].fee;
-  updTag();saveAndCalc();
-}
-function onFeeInput(){
-  selB=3;
-  for(let j=0;j<4;j++)document.getElementById('bk'+j).classList.toggle('sel',j===3);
-  document.getElementById('cfd').textContent=(parseFloat(document.getElementById('c-fee').value)||0)+'%';
-  updTag();saveAndCalc();
-}
-function updTag(){const b=BANKS[selB],t=document.getElementById('fee-tag');t.textContent=b.tag;t.style.cssText=b.cls+';font-size:8px;padding:2px 4px;border-radius:3px;letter-spacing:-0.5px;white-space:nowrap';}
+function selBank(i){selB=i;for(let j=0;j<4;j++)document.getElementById('bk'+j).classList.toggle('sel',j===i);saveAndCalc();}
 let ct2=null,ci2=null;
 function scfg(id,d,e){
   e.preventDefault();
-  const inp=document.getElementById(id);
-  inp.value=(parseFloat(inp.value)||0)+d;
-  saveAndCalc();
+  const inp=document.getElementById(id);inp.value=(parseFloat(inp.value)||0)+d;saveAndCalc();
   ct2=setTimeout(()=>{ci2=setInterval(()=>{inp.value=(parseFloat(inp.value)||0)+d;saveAndCalc();},80);},400);
 }
 function ecfg(e){if(e)e.preventDefault();clearTimeout(ct2);clearInterval(ci2);}
-const getGap=()=>parseFloat(document.getElementById('c-gap').value)||10;
-const getBuyGap=()=>parseFloat(document.getElementById('buy-gap').value)||(-5);
+const getGap=()=>parseFloat(document.getElementById('c-gap').value)||3;
+const getBuyGap=()=>parseFloat(document.getElementById('buy-gap').value)||(-3);
 const getSellGap=()=>parseFloat(document.getElementById('sell-gap').value)||5;
-const getFee=()=>parseFloat(document.getElementById('c-fee').value)||0;
 
-// ── 계좌 데이터 ────────────────────────────────────────────────────
-let accts=Array(10).fill(null).map(()=>({rate:'',qty:''}));
-
-// ── 테이블 빌드 ────────────────────────────────────────────────────
+// ── 테이블 ─────────────────────────────────────────────────────────
 function buildTable(){
   document.getElementById('tbl').innerHTML=accts.map((a,i)=>{
     const s=i===0?Math.round(effectiveRate()):(parseFloat(accts[i-1].rate)?Math.round(parseFloat(accts[i-1].rate)-getGap()):'');
-    return `<tr><td><div style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">${i+1}</div>${i===0?'<div style="font-size:9px;color:var(--color-text-info)">메인</div>':''}</td>
-    <td><div class="rate-wrap">
-      <div class="rb" ontouchstart="ss(${i},-1,event)" ontouchend="es(event)" onmousedown="ss(${i},-1,event)" onmouseup="es(event)" onmouseleave="es(event)">−</div>
-      <input class="ri" id="r${i}" type="number" value="${a.rate}" placeholder="${s}" onblur="sr(${i})">
-      <div class="rb" ontouchstart="ss(${i},1,event)" ontouchend="es(event)" onmousedown="ss(${i},1,event)" onmouseup="es(event)" onmouseleave="es(event)">+</div>
-    </div></td>
-    <td><input class="qi" id="q${i}" type="number" value="${a.qty}" placeholder="1000" onblur="sq(${i})"></td>
-    <td id="p${i}">-</td><td id="n${i}">-</td>
-    <td><button class="xb" onclick="cl(${i})">✕</button></td></tr>`;
+    return `<tr>
+      <td><div style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">${i+1}</div>${i===0?'<div style="font-size:9px;color:var(--color-text-info)">메인</div>':''}</td>
+      <td><div class="rate-wrap">
+        <div class="rb" ontouchstart="ss(${i},-1,event)" ontouchend="es(event)" onmousedown="ss(${i},-1,event)" onmouseup="es(event)" onmouseleave="es(event)">−</div>
+        <input class="ri" id="r${i}" type="number" value="${a.rate}" placeholder="${s}" onblur="sr(${i})">
+        <div class="rb" ontouchstart="ss(${i},1,event)" ontouchend="es(event)" onmousedown="ss(${i},1,event)" onmouseup="es(event)" onmouseleave="es(event)">+</div>
+      </div></td>
+      <td><input class="qi" id="q${i}" type="number" value="${a.qty}" placeholder="100" onblur="sq(${i})"></td>
+      <td id="p${i}">-</td>
+      <td><button class="xb" onclick="cl(${i})">✕</button></td>
+    </tr>`;
   }).join('');
   renderCalc();
 }
 
 function renderCalc(){
-  // 보정 환율로 계산
-  const cur=effectiveRate(), g=getGap(), bg=getBuyGap(), sg=getSellGap(), f=getFee();
-  let tP=0,tN=0,tF=0,tI=0,cnt=0,beLines='';
+  const cur=effectiveRate(), g=getGap(), bg=getBuyGap(), sg=getSellGap();
+  let tP=0,tI=0,cnt=0,beLines='';
   accts.forEach((a,i)=>{
-    const r=parseFloat(a.rate),q=parseFloat(a.qty),pe=document.getElementById('p'+i),ne=document.getElementById('n'+i);
-    if(!pe||!ne)return;
+    const r=parseFloat(a.rate),q=parseFloat(a.qty);
+    const pe=document.getElementById('p'+i);
+    if(!pe)return;
     const s=i===0?Math.round(cur):(parseFloat(accts[i-1].rate)?Math.round(parseFloat(accts[i-1].rate)-g):'');
     if(r>0&&q>0){
-      const aB=r+bg,sT=r+sg,gr=Math.round((cur-r)*q),pc=((cur-r)/r*100),
-            tf=f===0?0:Math.round(r*q*(f/100))+Math.round(cur*q*(f/100)),nt=gr-tf;
-      const nS=f===0?Math.round((sT-r)*q):Math.round((sT-r)*q)-(Math.round(r*q*(f/100))+Math.round(sT*q*(f/100)));
-      tP+=gr;tN+=nt;tF+=tf;tI+=Math.round(r*q);cnt++;
-      if(cur<=aB)fireAlarm('buy',i,aB);
-      if(cur>=sT)fireAlarm('sell',i,sT);
-      const gc=gr>=0?'pos':'neg',nc=nt>0?'pos':nt===0?'muted':'neg';
+      const aB=r+bg, sT=r+sg;
+      const gr=Math.round((cur-r)*q), pc=((cur-r)/r*100);
+      tP+=gr; tI+=Math.round(r*q); cnt++;
+      // 알람 체크 (보정 환율 기준)
+      if(cur<=aB) fireAlarm('buy',i,aB);
+      if(cur>=sT) fireAlarm('sell',i,sT);
+      const gc=gr>=0?'pos':'neg';
       pe.innerHTML=`<span class="${gc}" style="font-size:11px">${gr>=0?'+':''}${gr.toLocaleString()}<br><span style="font-size:10px">(${pc>=0?'+':''}${pc.toFixed(1)}%)</span></span>`;
-      ne.innerHTML=f===0
-        ?`<span class="${gc}" style="font-size:11px;font-weight:500">${gr>=0?'+':''}${gr.toLocaleString()}<br><span style="font-size:9px;color:var(--color-text-success)">수수료 0원</span></span>`
-        :`<span class="${nc}" style="font-size:11px;font-weight:500">${nt>=0?'+':''}${nt.toLocaleString()}<br><span style="font-size:9px;color:var(--color-text-secondary)">수수료 ${tf.toLocaleString()}원</span></span>`;
       beLines+=`<div class="be-row">
         <span style="color:var(--color-text-secondary);font-weight:500;min-width:26px">${i+1}번</span>
-        <span style="color:var(--color-text-danger)">매수 ${aB.toLocaleString()} <span class="${cur<=aB?'pos':'muted'}">${cur<=aB?'✓':''}</span></span>
-        <span style="color:var(--color-text-success)">매도 ${sT.toLocaleString()} <span class="${cur>=sT?'pos':'muted'}">${cur>=sT?'✓익절!':''}</span></span>
-        <span class="pos" style="font-size:10px">+${nS.toLocaleString()}원</span>
+        <span style="color:var(--color-text-danger)">매수알람 ${aB.toLocaleString()} <span class="${cur<=aB?'pos':'muted'}">${cur<=aB?'✓':''}</span></span>
+        <span style="color:var(--color-text-success)">매도알람 ${sT.toLocaleString()} <span class="${cur>=sT?'pos':'muted'}">${cur>=sT?'✓익절!':''}</span></span>
+        <span class="pos" style="font-size:10px">+${Math.round((sT-r)*q).toLocaleString()}원</span>
       </div>`;
     }else{
       pe.innerHTML=`<span class="muted" style="font-size:10px">${s?s.toLocaleString()+'<br><span style="font-size:9px">추천가</span>':'-'}</span>`;
-      ne.innerHTML='<span class="muted">-</span>';
     }
   });
   document.getElementById('tft').innerHTML=cnt>0
-    ?`<tr class="total-row"><td colspan="2" style="text-align:left;padding-left:8px;font-size:10px">${cnt}계좌/${Math.round(tI/10000)}만원</td><td></td><td class="${tP>=0?'pos':'neg'}" style="font-size:10px">${tP>=0?'+':''}${tP.toLocaleString()}</td><td class="${tN>0?'pos':tN===0?'muted':'neg'}" style="font-size:10px;font-weight:500">${tN>=0?'+':''}${tN.toLocaleString()}</td><td></td></tr>`
+    ?`<tr class="total-row"><td colspan="2" style="text-align:left;padding-left:8px;font-size:10px">${cnt}계좌 / ${Math.round(tI/10000)}만원</td><td></td><td class="${tP>=0?'pos':'neg'}" style="font-size:10px;font-weight:500">${tP>=0?'+':''}${tP.toLocaleString()}원</td><td></td></tr>`
     :'';
   if(cnt>0){
     document.getElementById('isum').innerHTML=`<div class="ibox">
-      <div class="irow"><span>총 수수료</span><span style="font-weight:500;color:var(--color-text-warning)">${f===0?'무료 (0원)':'−'+tF.toLocaleString()+'원'}</span></div>
-      <div class="irow"><span>실제 순수익</span><span class="${tN>=0?'pos':'neg'}" style="font-weight:500">${tN>=0?'+':''}${tN.toLocaleString()}원</span></div>
+      <div class="irow"><span>보정 환율</span><span style="font-weight:500">${cur.toLocaleString()}원</span></div>
+      <div class="irow"><span>평가 손익 합계</span><span class="${tP>=0?'pos':'neg'}" style="font-weight:500">${tP>=0?'+':''}${tP.toLocaleString()}원</span></div>
     </div>`;
     document.getElementById('bebox').innerHTML=`
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-        <span style="font-size:11px;color:var(--color-text-secondary);font-weight:500">목표가 알람 (매수${bg>0?'+':''}${bg}/매도+${sg}원)</span>
+        <span style="font-size:11px;color:var(--color-text-secondary);font-weight:500">알람 목표가 (매수${bg>0?'+':''}${bg} / 매도+${sg}원)</span>
         <button class="xb" onclick="resetAlarms()">알람초기화</button>
       </div>
       <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 12px">${beLines}</div>`;
@@ -610,13 +582,8 @@ async function fetchRate(){
     try{
       const krw=await api();
       if(krw&&krw>0){
-        const prev=curRate;
         curRate=Math.round(krw*100)/100;
-        const diff=(curRate-prev).toFixed(2);
         document.getElementById('r-cur').textContent=curRate.toLocaleString('ko-KR',{minimumFractionDigits:2});
-        const b=document.getElementById('r-chg');
-        b.textContent=(parseFloat(diff)>=0?'+':'')+diff;
-        b.className='badge '+(parseFloat(diff)>0?'up':parseFloat(diff)<0?'dn':'neu');
         const now=new Date();
         document.getElementById('r-time').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+' 기준';
         updateAdjResult();
@@ -632,20 +599,18 @@ function refreshRate(btn){
   fetchRate().finally(()=>{btn.textContent=orig;btn.disabled=false;});
 }
 
-// ── 초기화 — 저장된 데이터 복원 ───────────────────────────────────
+// ── 초기화 ─────────────────────────────────────────────────────────
 function init(){
   const saved=loadData();
   if(saved){
     if(saved.accts) accts=saved.accts;
-    if(saved.buyGap !== undefined) document.getElementById('buy-gap').value=saved.buyGap;
-    if(saved.sellGap !== undefined) document.getElementById('sell-gap').value=saved.sellGap;
-    if(saved.cGap !== undefined) document.getElementById('c-gap').value=saved.cGap;
-    if(saved.fee !== undefined) document.getElementById('c-fee').value=saved.fee;
-    if(saved.adj !== undefined) document.getElementById('adj-val').value=saved.adj;
-    if(saved.selB !== undefined){
+    if(saved.buyGap!=null) document.getElementById('buy-gap').value=saved.buyGap;
+    if(saved.sellGap!=null) document.getElementById('sell-gap').value=saved.sellGap;
+    if(saved.cGap!=null) document.getElementById('c-gap').value=saved.cGap;
+    if(saved.adj!=null) document.getElementById('adj-val').value=saved.adj;
+    if(saved.selB!=null){
       selB=saved.selB;
       for(let j=0;j<4;j++) document.getElementById('bk'+j).classList.toggle('sel',j===selB);
-      updTag();
     }
   }
   buildTable();
@@ -653,7 +618,6 @@ function init(){
   fetchRate();
   setInterval(fetchRate,60000);
 }
-
 init();
 </script>
 </body>
