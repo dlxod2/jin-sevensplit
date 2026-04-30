@@ -531,34 +531,33 @@ function renderTrades(){
 
 // ── 환율 가져오기 ──────────────────────────────────────────────────
 async function fetchRate(){
-  const t=()=>'?t='+Date.now();
   const apis=[
-    async()=>{const r=await fetch('https://open.er-api.com/v6/latest/USD'+t());return(await r.json()).rates?.KRW;},
-    async()=>{const r=await fetch('https://api.exchangerate-api.com/v4/latest/USD'+t());return(await r.json()).rates?.KRW;},
-    async()=>{const r=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json'+t());return(await r.json()).usd?.krw;}
+    // jsdelivr - CORS 허용, GitHub Pages에서 확실히 작동
+    'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json',
+    // 날짜별 fallback
+    `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${new Date().toISOString().slice(0,10)}/v1/currencies/usd.json`,
   ];
-  for(const api of apis){
+  for(const url of apis){
     try{
-      const krw=await api();
+      const r=await fetch(url+'?t='+Date.now(),{cache:'no-store'});
+      const d=await r.json();
+      const krw=d.usd?.krw;
       if(krw&&krw>800&&krw<2000){
-        const prev=curRate;curRate=Math.round(krw*100)/100;
+        const prev=curRate;
+        curRate=Math.round(krw*100)/100;
         const diff=(curRate-prev).toFixed(2);
         document.getElementById('r-cur').textContent=curRate.toLocaleString('ko-KR',{minimumFractionDigits:2});
         const b=document.getElementById('r-chg');
         b.textContent=(parseFloat(diff)>=0?'+':'')+diff;
         b.className='badge '+(parseFloat(diff)>0?'up':parseFloat(diff)<0?'dn':'neu');
         const now=new Date();
-        const timeStr=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
-        document.getElementById('r-time').textContent=timeStr+' 기준';
-        updateAdjInfo(); // 차트 실시간 환율도 함께 갱신
-        renderCalc();
-        return;
+        document.getElementById('r-time').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0')+' 기준';
+        updateAdjInfo();renderCalc();return;
       }
     }catch(e){continue;}
   }
   document.getElementById('r-time').textContent='로드 실패 — 새로고침 해주세요';
 }
-function doRefresh(btn){const orig=btn.textContent;btn.textContent='⟳';btn.disabled=true;fetchRate().finally(()=>{btn.textContent=orig;btn.disabled=false;});}
 
 // ── 차트 ────────────────────────────────────────────────────────────
 function selChart(m){chartMonths=m;document.querySelectorAll('.ct').forEach((el,i)=>el.classList.toggle('on',[3,6,12][i]===m));loadChart();}
