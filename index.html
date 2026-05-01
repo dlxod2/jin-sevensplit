@@ -307,6 +307,7 @@ tr:last-child td{border-bottom:none}
 <script>
 // ── 전역 ────────────────────────────────────────────────────────────
 let curRate=1380.0, selB=0, alarmFired={buy:{},sell:{}};
+let _cfgChanging=false; // 설정 변경 중 알람 차단 플래그
 let trades=[], chartMonths=3, chartCache={};
 const MIN_ACNT=5, MAX_ACNT=10;
 let accts=Array(MAX_ACNT).fill(null).map(()=>({rate:'',qty:''}));
@@ -326,11 +327,14 @@ function onCfgChange(){
   if(v>MAX_ACNT)v=MAX_ACNT;
   el.value=v;
   alarmFired={buy:{},sell:{}};
-  document.getElementById('alm-status').textContent='🔔 알람 대기중';
+  document.getElementById('alm-status').textContent='🔔 알람 대기중 (설정 변경됨)';
   document.getElementById('cnt-badge').textContent=`📋 현재 계좌 수: ${v}개`;
   updateAdjInfo();
   saveAll();
+  // ★ 설정 변경 중에는 알람 차단 — 다음 환율 업데이트 때부터 적용
+  _cfgChanging=true;
   buildTable();
+  _cfgChanging=false;
 }
 
 function updateAdjInfo(){
@@ -402,7 +406,10 @@ function playSound(type){if(!audioCtx)try{audioCtx=new(window.AudioContext||wind
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/jin-sevensplit/sw.js').then(()=>checkAuth()).catch(()=>checkAuth());else checkAuth();
 function checkAuth(){const btn=document.getElementById('ask-auth');if(typeof Notification==='undefined')return;if(Notification.permission==='default'){btn.style.display='block';btn.onclick=()=>Notification.requestPermission().then(p=>{if(p==='granted')btn.style.display='none';else{btn.textContent='🔕 알림 차단됨 — 설정에서 허용';btn.style.background='#dc2626';btn.onclick=null;}});}else if(Notification.permission==='denied'){btn.style.display='block';btn.textContent='🔕 알림 차단됨 — 설정에서 허용';btn.style.background='#dc2626';btn.onclick=null;}}
 function sendPush(title,body){if(typeof Notification==='undefined'||Notification.permission!=='granted')return;const opts={body,icon:'https://dlxod2.github.io/jin-sevensplit/favicon.ico',vibrate:[200,100,200],tag:'ss-alert'};if('serviceWorker' in navigator)navigator.serviceWorker.ready.then(r=>r.showNotification(title,opts)).catch(()=>new Notification(title,opts));else new Notification(title,opts);}
-function fireAlarm(type,idx,rate){const key=String(idx);if(alarmFired[type][key])return;alarmFired[type][key]=true;const title=type==='buy'?`📉 ${idx+1}번 매수 알람!`:`📈 ${idx+1}번 매도 알람!`;const body=`${rate.toLocaleString()}원 도달! 지금 확인하세요.`;playSound(type);if(navigator.vibrate)navigator.vibrate(type==='buy'?[200,100,200,100,200]:[400,150,400]);const t=document.getElementById('alarm-toast');t.className='toast '+(type==='buy'?'tbuy':'tsell');t.innerHTML=`<strong>${title}</strong><br>${body}`;t.style.display='block';setTimeout(()=>t.style.display='none',4000);sendPush(title,body);document.getElementById('alm-status').textContent='🔔 알람 발생!';}
+function fireAlarm(type,idx,rate){
+  // 설정 변경 중이면 알람 차단 (보정값 입력 도중 오발 방지)
+  if(_cfgChanging)return;
+  const key=String(idx);if(alarmFired[type][key])return;alarmFired[type][key]=true;const title=type==='buy'?`📉 ${idx+1}번 매수 알람!`:`📈 ${idx+1}번 매도 알람!`;const body=`${rate.toLocaleString()}원 도달! 지금 확인하세요.`;playSound(type);if(navigator.vibrate)navigator.vibrate(type==='buy'?[200,100,200,100,200]:[400,150,400]);const t=document.getElementById('alarm-toast');t.className='toast '+(type==='buy'?'tbuy':'tsell');t.innerHTML=`<strong>${title}</strong><br>${body}`;t.style.display='block';setTimeout(()=>t.style.display='none',4000);sendPush(title,body);document.getElementById('alm-status').textContent='🔔 알람 발생!';}
 function resetAlarms(){alarmFired={buy:{},sell:{}};document.getElementById('alm-status').textContent='🔔 알람 대기중';}
 
 // ── 페이지 ─────────────────────────────────────────────────────────
