@@ -317,6 +317,7 @@ const getAdj=()=>parseFloat(document.getElementById('adj').value)||0;
 const getBG=()=>parseFloat(document.getElementById('bg').value)||-3;
 const getSG=()=>parseFloat(document.getElementById('sg').value)||5;
 const getAcnt=()=>Math.min(MAX_ACNT,Math.max(MIN_ACNT,parseInt(document.getElementById('acnt').value)||7));
+const getCG=()=>Math.abs(getBG())||3;
 const effRate=()=>Math.round((curRate+getAdj())*100)/100;
 
 // ── 설정 변경 ──────────────────────────────────────────────────────
@@ -421,16 +422,29 @@ function goPage(p){
   if(p==='trade')renderTrades();
 }
 
+// ── 추천가 연속 계산 (빈 칸이어도 cascade) ──────────────────────
+function getSuggested(i){
+  if(i===0) return Math.round(effRate());
+  // 이전 칸에 실제 입력값 있으면 그 값 기준, 없으면 추천가 기준
+  const prevActual=parseFloat((accts[i-1]||{}).rate);
+  const base=prevActual>0?prevActual:getSuggested(i-1);
+  return Math.round(base-getCG());
+}
+
 // ── 테이블 ─────────────────────────────────────────────────────────
 function buildTable(){
   const cnt=getAcnt();
   document.getElementById('tbl').innerHTML=Array.from({length:cnt},(_,i)=>{
     const a=accts[i]||{rate:'',qty:''};
+    const suggested=getSuggested(i);
     return `<tr>
       <td><div style="font-size:11px;font-weight:500;color:var(--ts)">${i+1}</div>${i===0?'<div style="font-size:9px;color:var(--ti)">메인</div>':''}</td>
       <td><div class="rw">
         <div class="rb" ontouchstart="rowSpin(${i},-1,event)" ontouchend="rowStop(event)" onmousedown="rowSpin(${i},-1,event)" onmouseup="rowStop(event)" onmouseleave="rowStop(event)">−</div>
-        <input class="ri" id="r${i}" type="number" value="${a.rate}" placeholder="${i===0?Math.round(effRate()):''}" onblur="saveRate(${i})">
+        <input class="ri" id="r${i}" type="number" value="${a.rate}"
+          placeholder="${suggested}"
+          title="${i===0?'현재 환율 기준':'윗 칸 기준 간격 적용'}"
+          onblur="saveRate(${i})">
         <div class="rb" ontouchstart="rowSpin(${i},1,event)" ontouchend="rowStop(event)" onmousedown="rowSpin(${i},1,event)" onmouseup="rowStop(event)" onmouseleave="rowStop(event)">+</div>
       </div></td>
       <td><input class="qi" id="q${i}" type="number" value="${a.qty}" placeholder="100" onblur="saveQty(${i})"></td>
@@ -461,7 +475,11 @@ function renderCalc(){
         <span style="color:var(--tg)">매도알람 ${sT.toLocaleString()} <span class="${cur>=sT?'pos':'muted'}">${cur>=sT?'✓익절!':''}</span></span>
         <span class="pos" style="font-size:10px">+${Math.round((sT-r)*q).toLocaleString()}원</span>
       </div>`;
-    }else{pe.innerHTML=`<span class="muted" style="font-size:10px">-</span>`;}
+    }else{
+      // 입력값 없으면 추천 매수가 표시
+      const sugg=getSuggested(i);
+      pe.innerHTML=`<span class="muted" style="font-size:10px">${sugg.toLocaleString()}<br><span style="font-size:9px;color:var(--ti)">추천매수가</span></span>`;
+    }
   });
   document.getElementById('tft').innerHTML=count>0?`<tr class="trow"><td colspan="2" style="text-align:left;padding-left:8px;font-size:10px">${count}계좌/${Math.round(tI/10000)}만원</td><td></td><td class="${tP>=0?'pos':'neg'}" style="font-size:10px;font-weight:500">${tP>=0?'+':''}${tP.toLocaleString()}원</td><td></td></tr>`:'';
   if(count>0){
