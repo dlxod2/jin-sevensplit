@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>세븐 스플릿 달러 관리</title>
 <style>
 :root{
@@ -38,7 +37,6 @@ body{font-family:var(--f);background:var(--bs);min-height:100vh}
 .bkf{font-size:11px;font-weight:500;display:block;margin-top:1px}
 .bkt{font-size:8px;padding:1px 3px;border-radius:3px;display:inline-block;margin-top:2px}
 .best{background:var(--bg2);color:var(--tg)}.good{background:var(--bi);color:var(--ti)}
-/* 보정값 */
 .abox{background:var(--bw);border:0.5px solid var(--bow);border-radius:var(--rm);padding:8px 10px;margin-bottom:8px}
 .arow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .albl{font-size:11px;color:var(--tw);flex:1;min-width:120px;line-height:1.4}
@@ -48,7 +46,6 @@ body{font-family:var(--f);background:var(--bs);min-height:100vh}
 .ainp{width:58px;padding:5px 4px;border:0.5px solid var(--bow);border-radius:6px;font-size:13px;font-weight:600;background:var(--bp);color:var(--tp);text-align:center}
 .ainfo{font-size:10px;color:var(--ts);margin-top:5px;padding-top:5px;border-top:0.5px solid var(--bow);word-break:keep-all}
 .ainfo b{color:var(--tp)}
-/* ★ 설정 3칸 — 넘침 방지 핵심 수정 */
 .cfg{margin-bottom:8px;background:var(--bp);border-radius:var(--rm);padding:8px 6px;border:0.5px solid var(--bo);overflow:hidden}
 .cfg3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
 .ci{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;overflow:hidden}
@@ -60,13 +57,16 @@ body{font-family:var(--f);background:var(--bs);min-height:100vh}
 .cinp{flex:1;min-width:0;max-width:100%;padding:3px 1px;border:0.5px solid var(--bo2);border-radius:4px;font-size:11px;font-weight:600;background:var(--bp);color:var(--tp);text-align:center;width:100%}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]{-moz-appearance:textfield}
-/* 계좌수 배지 */
 .cnt-badge{background:var(--bi);color:var(--ti);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;text-align:center;margin-bottom:6px;border:0.5px solid var(--boi)}
-/* 테이블 */
+/* 알람 기준 표시 박스 */
+.alarm-base-box{background:var(--bg2);border:0.5px solid #bbf7d0;border-radius:var(--rm);padding:8px 12px;margin-bottom:8px;font-size:11px}
+.alarm-base-box b{color:var(--tg)}
 table{width:100%;border-collapse:collapse;font-size:11px;background:var(--bp);border-radius:var(--rm);overflow:hidden;border:0.5px solid var(--bo)}
 th{padding:8px 2px;text-align:center;font-weight:500;color:var(--ts);border-bottom:0.5px solid var(--bo);font-size:10px;background:var(--bs)}
 td{padding:6px 2px;text-align:center;border-bottom:0.5px solid var(--bo);color:var(--tp);vertical-align:middle}
 tr:last-child td{border-bottom:none}
+/* 마지막 입력 계좌 하이라이트 */
+tr.last-acct td{background:rgba(33,150,243,0.06);border-left:3px solid var(--ti)}
 .rw{display:flex;align-items:center;justify-content:center;gap:3px}
 .rb{width:28px;height:28px;border:0.5px solid var(--bo2);border-radius:6px;background:var(--bs);cursor:pointer;font-size:16px;font-weight:300;color:var(--tp);display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-user-select:none;user-select:none;touch-action:manipulation}
 .rb:active{background:var(--bi);color:var(--ti)}
@@ -77,12 +77,9 @@ tr:last-child td{border-bottom:none}
 .xb{border:0.5px solid var(--bo);border-radius:6px;background:var(--bp);cursor:pointer;color:var(--ts);padding:4px 8px;font-size:12px}
 .ibox{background:var(--bi);border-radius:var(--rm);padding:8px 12px;margin-bottom:8px;font-size:11px;color:var(--ti);border:0.5px solid var(--boi)}
 .irow{display:flex;justify-content:space-between;padding:2px 0}
-.berow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--bo);font-size:11px;gap:4px;flex-wrap:wrap}
-.berow:last-child{border-bottom:none}
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:999;padding:14px 22px;border-radius:var(--r);font-size:14px;font-weight:500;display:none;max-width:340px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.25)}
 .tbuy{background:#1a472a;color:#4ade80;border:1px solid #4ade80}
 .tsell{background:#1e3a5f;color:#60a5fa;border:1px solid #60a5fa}
-/* 거래기록 */
 .sgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
 .scard{background:var(--bp);border:0.5px solid var(--bo);border-radius:var(--r);padding:12px;text-align:center}
 .slbl{font-size:10px;color:var(--ts);margin-bottom:4px}
@@ -105,7 +102,6 @@ tr:last-child td{border-bottom:none}
 .tdetail{font-size:11px;color:var(--ts)}
 .tdel{width:24px;height:24px;border:0.5px solid var(--bo);border-radius:5px;background:var(--bp);cursor:pointer;font-size:12px;color:var(--ts);flex-shrink:0}
 .tempty{text-align:center;padding:30px;color:var(--ts);font-size:12px}
-/* 차트 */
 .ctabs{display:flex;gap:4px;margin-bottom:8px}
 .ct{flex:1;padding:8px;font-size:12px;border:0.5px solid var(--bo);border-radius:var(--rm);background:var(--bp);color:var(--ts);cursor:pointer;text-align:center}
 .ct.on{background:var(--bi);color:var(--ti);border-color:var(--boi)}
@@ -118,7 +114,6 @@ tr:last-child td{border-bottom:none}
 .grow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--bo)}
 .grow:last-child{border-bottom:none}
 .loading{text-align:center;padding:40px;color:var(--ts);font-size:13px}
-/* 수수료 */
 .bcard{background:var(--bp);border:0.5px solid var(--bo);border-radius:var(--r);padding:14px;margin-bottom:10px}
 .bch{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .bcn{font-size:15px;font-weight:500;color:var(--tp)}
@@ -135,7 +130,6 @@ tr:last-child td{border-bottom:none}
 <div class="wrap">
 <button id="ask-auth" class="abtn">🔔 실시간 알림 활성화하기</button>
 <a href="guide%20book.html" class="gbtn">📖 세븐 스플릿 투자 가이드북 보기</a>
-
 <div class="top">
   <div>
     <div style="font-size:10px;color:var(--ts);margin-bottom:2px">USD/KRW</div>
@@ -148,10 +142,9 @@ tr:last-child td{border-bottom:none}
   </div>
   <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
     <button class="xb" onclick="doRefresh(this)">새로고침</button>
-    <div style="font-size:10px;color:var(--ts)" id="alm-status">🔔 알람 대기중</div>
+    <div style="font-size:10px;color:var(--ts)" id="alm-status">🔔 환율 로딩 중...</div>
   </div>
 </div>
-
 <div class="nav">
   <div class="nb on" onclick="goPage('main')">세븐스플릿</div>
   <div class="nb" onclick="goPage('trade')">거래기록</div>
@@ -159,7 +152,6 @@ tr:last-child td{border-bottom:none}
   <div class="nb" onclick="goPage('fee')">수수료</div>
 </div>
 
-<!-- 메인 -->
 <div id="page-main" class="page show">
   <div class="bkrow">
     <div class="bk sel" id="bk0" onclick="selBank(0)"><span class="bkn">토스뱅크</span><span class="bkf pos">0%</span><span class="bkt best">평생무료</span></div>
@@ -167,7 +159,6 @@ tr:last-child td{border-bottom:none}
     <div class="bk" id="bk2" onclick="selBank(2)"><span class="bkn">KB국민</span><span class="bkf pos">0%</span><span class="bkt good">100%우대</span></div>
     <div class="bk" id="bk3" onclick="selBank(3)"><span class="bkn">직접입력</span><span class="bkf muted" id="cfd">-</span><span class="bkt neu">커스텀</span></div>
   </div>
-
   <div class="abox">
     <div class="arow">
       <span class="albl">📌 은행 환율 보정값<br><span style="font-size:10px">앱보다 내 은행이 높으면 + 낮으면 −</span></span>
@@ -180,15 +171,13 @@ tr:last-child td{border-bottom:none}
     </div>
     <div class="ainfo" id="adj-info">보정 없음</div>
   </div>
-
-  <!-- 설정 3칸 -->
   <div class="cfg">
     <div class="cfg3">
       <div class="ci">
         <span class="clbl buy">📉매수갭(원)</span>
         <div class="cctrl">
           <div class="cb" onmousedown="cfgSpin('bg',-1,event)" onmouseup="cfgStop(event)" ontouchstart="cfgSpin('bg',-1,event)" ontouchend="cfgStop(event)" onmouseleave="cfgStop(event)">−</div>
-          <input class="cinp" id="bg" type="number" value="-3" oninput="onCfgChange()">
+          <input class="cinp" id="bg" type="number" value="-5" oninput="onCfgChange()">
           <div class="cb" onmousedown="cfgSpin('bg',1,event)" onmouseup="cfgStop(event)" ontouchstart="cfgSpin('bg',1,event)" ontouchend="cfgStop(event)" onmouseleave="cfgStop(event)">+</div>
         </div>
       </div>
@@ -210,8 +199,9 @@ tr:last-child td{border-bottom:none}
       </div>
     </div>
   </div>
-
   <div class="cnt-badge" id="cnt-badge">📋 현재 계좌 수: 7개</div>
+  <!-- 알람 기준 표시 -->
+  <div class="alarm-base-box" id="alarm-base-box" style="display:none"></div>
   <div id="isum"></div>
   <div style="font-size:11px;color:var(--ts);margin:4px 0 6px;font-weight:500">세븐 스플릿 관리표</div>
   <table>
@@ -224,7 +214,6 @@ tr:last-child td{border-bottom:none}
   <div id="bebox" style="margin-top:8px"></div>
 </div>
 
-<!-- 거래기록 -->
 <div id="page-trade" class="page">
   <div class="sgrid">
     <div class="scard"><div class="slbl">총 실현 수익</div><div class="sval pos" id="s-profit">0원</div></div>
@@ -242,12 +231,11 @@ tr:last-child td{border-bottom:none}
     <button class="rfbtn" onclick="addRecord()">💾 기록 저장</button>
   </div>
   <div class="tlist">
-    <div class="tlh"><span class="tlt">📋 거래 내역</span><button class="xb" onclick="if(confirm('전체 삭제할까요?')){trades=[];saveAll();renderTrades()}">전체삭제</button></div>
+    <div class="tlh"><span class="tlt">📋 거래 내역</span><button class="xb" onclick="if(confirm('전체 삭제?')){trades=[];saveAll();renderTrades()}">전체삭제</button></div>
     <div id="trade-items"></div>
   </div>
 </div>
 
-<!-- 환율 추이 -->
 <div id="page-chart" class="page">
   <div class="ctabs">
     <div class="ct on" onclick="selChart(3)">3개월</div>
@@ -264,40 +252,31 @@ tr:last-child td{border-bottom:none}
     </div>
     <div style="font-size:11px;color:var(--ts);margin-top:6px;padding-top:6px;border-top:0.5px solid var(--bo)">
       보정값 적용: <span id="chart-eff-rate" style="font-weight:600;color:var(--ti)">--</span>원
-      <span style="margin-left:6px;color:var(--tw);font-size:10px">⚠️ 은행 환율과 차이 있을 수 있음</span>
     </div>
   </div>
   <div id="chart-area"><div class="loading">📡 데이터 로딩 중...</div></div>
 </div>
 
-<!-- 수수료 -->
 <div id="page-fee" class="page">
   <div class="bcard">
     <div class="bch"><div><div class="bcn">토스뱅크 외화통장</div></div><span class="bcf pos">0%</span></div>
     <div class="il"><span class="ill">수수료</span><span class="ilv pos">살 때/팔 때 무료 (평생)</span></div>
     <div class="il"><span class="ill">한도</span><span class="ilv">제한 없음 · 17종 통화</span></div>
-    <div class="il"><span class="ill">ATM출금</span><span class="ilv">월 5회/＄700까지 무료</span></div>
     <a class="lbtn" href="https://www.tossbank.com/product-service/fx/account">공식 페이지 확인 ↗</a>
   </div>
   <div class="bcard">
     <div class="bch"><div><div class="bcn">카카오뱅크 달러박스</div></div><span class="bcf pos">0%</span></div>
     <div class="il"><span class="ill">수수료</span><span class="ilv pos">환전 수수료 없음</span></div>
-    <div class="il"><span class="ill">운영</span><span class="ilv">달러 전용 · 24시간</span></div>
     <div class="wbox">⚠️ 동일자 $10,000 초과 시 국세청 자동 통보</div>
     <a class="lbtn" href="https://www.kakaobank.com/products/dollarbox">공식 페이지 확인 ↗</a>
   </div>
   <div class="bcard">
     <div class="bch"><div><div class="bcn">KB국민은행</div></div><span class="bcf" style="color:var(--ti)">0%</span></div>
     <div class="il"><span class="ill">수수료</span><span class="ilv" style="color:var(--ti)">상시 100% 환율우대</span></div>
-    <div class="wbox">⚠️ 정책 변경 가능. 이용 전 확인 필수.</div>
+    <div class="wbox">⚠️ 정책 변경 가능.</div>
     <a class="lbtn" href="https://obank.kbstar.com/quics?page=C022208">공식 페이지 확인 ↗</a>
   </div>
-  <div class="bcard">
-    <div class="bch"><div><div class="bcn">일반은행</div></div><span class="bcf" style="color:var(--tw)">0.175%</span></div>
-    <div class="il"><span class="ill">앱 환전 90%우대</span><span class="ilv">0.175%</span></div>
-    <a class="lbtn" href="https://exchange.kfb.or.kr/page/on_commission.php">은행별 비교 ↗</a>
-  </div>
-  <div class="wbox" style="margin-top:0">📌 수수료는 변경될 수 있습니다. 반드시 공식 페이지에서 확인하세요.</div>
+  <div class="wbox" style="margin-top:0">📌 수수료는 변경될 수 있습니다.</div>
 </div>
 
 <div class="toast" id="alarm-toast"></div>
@@ -305,149 +284,334 @@ tr:last-child td{border-bottom:none}
 </div>
 
 <script>
-// ── 전역 ────────────────────────────────────────────────────────────
-let curRate=1380.0, selB=0, alarmFired={buy:{},sell:{}};
-let _cfgChanging=false;  // 설정 변경 중 알람 차단
-let _rateLoaded=false;   // 환율 첫 로드 전 알람 차단 (앱 열릴 때 오발 방지)
-let trades=[], chartMonths=3, chartCache={};
-const MIN_ACNT=5, MAX_ACNT=10;
-let accts=Array(MAX_ACNT).fill(null).map(()=>({rate:'',qty:''}));
+// ════════════════════════════════════════════════
+// 전역
+// ════════════════════════════════════════════════
+let curRate     = 0;
+let selB        = 0;
+let _rateLoaded = false;  // 환율 로드 전 알람 차단
+let _cfgChanging= false;  // 설정 변경 중 알람 차단
+let trades      = [];
+let chartMonths = 3, chartCache = {};
+const MIN_ACNT  = 5, MAX_ACNT = 10;
+let accts = Array(MAX_ACNT).fill(null).map(() => ({rate:'', qty:''}));
 
-// ── 헬퍼 ────────────────────────────────────────────────────────────
-const getAdj=()=>parseFloat(document.getElementById('adj').value)||0;
-const getBG=()=>parseFloat(document.getElementById('bg').value)||-3;
-const getSG=()=>parseFloat(document.getElementById('sg').value)||5;
-const getAcnt=()=>Math.min(MAX_ACNT,Math.max(MIN_ACNT,parseInt(document.getElementById('acnt').value)||7));
-const getCG=()=>Math.abs(getBG())||3;
-const effRate=()=>Math.round((curRate+getAdj())*100)/100;
+// 알람 발동 기록 — localStorage에 저장해서 앱 껐다 켜도 유지
+let alarmFired  = {buy:'', sell:''};
+// buy/sell 에 마지막 알람 기준 환율을 저장 (같은 기준이면 재발동 안 함)
 
-// ── 설정 변경 ──────────────────────────────────────────────────────
-function onCfgChange(){
-  const el=document.getElementById('acnt');
-  let v=parseInt(el.value)||7;
-  if(v<MIN_ACNT)v=MIN_ACNT;
-  if(v>MAX_ACNT)v=MAX_ACNT;
-  el.value=v;
-  alarmFired={buy:{},sell:{}};
-  document.getElementById('alm-status').textContent='🔔 알람 대기중 (설정 변경됨)';
-  document.getElementById('cnt-badge').textContent=`📋 현재 계좌 수: ${v}개`;
-  updateAdjInfo();
-  saveAll();
-  // ★ 설정 변경 중에는 알람 차단 — 다음 환율 업데이트 때부터 적용
-  _cfgChanging=true;
-  buildTable();
-  _cfgChanging=false;
+// ════════════════════════════════════════════════
+// 헬퍼
+// ════════════════════════════════════════════════
+const getAdj  = () => parseFloat(document.getElementById('adj').value) || 0;
+const getBG   = () => parseFloat(document.getElementById('bg').value) || -5;
+const getSG   = () => parseFloat(document.getElementById('sg').value) || 5;
+const getAcnt = () => Math.min(MAX_ACNT, Math.max(MIN_ACNT, parseInt(document.getElementById('acnt').value)||7));
+const getCG   = () => Math.abs(getBG()) || 5;
+const effRate = () => curRate > 0 ? Math.round((curRate + getAdj()) * 100) / 100 : 0;
+
+// ★ 핵심: 마지막으로 입력된 계좌 인덱스 찾기
+function getLastFilledIdx() {
+  const cnt = getAcnt();
+  let last = -1;
+  for (let i = 0; i < cnt; i++) {
+    if (parseFloat(accts[i]?.rate) > 0) last = i;
+  }
+  return last;
 }
 
-function updateAdjInfo(){
-  const adj=getAdj(),eff=effRate(),el=document.getElementById('adj-info');
-  el.innerHTML=adj===0?'보정 없음 — 앱 환율 그대로 사용':`앱 환율 <b>${curRate.toLocaleString()}</b>원 ${adj>=0?'+':''}${adj}원 → 알람 기준 <b>${eff.toLocaleString()}</b>원`;
+// 추천가 연속 계산
+function getSuggested(i) {
+  if (curRate <= 0) return 0;
+  if (i === 0) return Math.round(effRate());
+  const prev = parseFloat(accts[i-1]?.rate);
+  const base = prev > 0 ? prev : getSuggested(i-1);
+  return base > 0 ? Math.round(base - getCG()) : 0;
+}
+
+// ════════════════════════════════════════════════
+// 설정 변경
+// ════════════════════════════════════════════════
+function onCfgChange() {
+  const el = document.getElementById('acnt');
+  let v = parseInt(el.value)||7;
+  if (v < MIN_ACNT) v = MIN_ACNT;
+  if (v > MAX_ACNT) v = MAX_ACNT;
+  el.value = v;
+  // 알람 기록 초기화 (설정 바뀌면 새 기준으로)
+  alarmFired = {buy:'', sell:''};
+  saveAlarmFired();
+  document.getElementById('alm-status').textContent = '🔔 알람 대기중';
+  document.getElementById('cnt-badge').textContent  = `📋 현재 계좌 수: ${v}개`;
+  updateAdjInfo();
+  saveAll();
+  _cfgChanging = true;
+  buildTable();
+  _cfgChanging = false;
+}
+
+function updateAdjInfo() {
+  const adj = getAdj(), eff = effRate();
+  const el = document.getElementById('adj-info');
+  el.innerHTML = adj===0
+    ? '보정 없음 — 앱 환율 그대로 사용'
+    : `앱 환율 <b>${curRate.toLocaleString()}</b>원 ${adj>=0?'+':''}${adj}원 → 알람 기준 <b>${eff.toLocaleString()}</b>원`;
   updateChartRateDisplay();
 }
 
-function updateChartRateDisplay(){
-  if(curRate<=0)return;
-  const now=new Date();
-  document.getElementById('chart-cur-rate').textContent=curRate.toLocaleString('ko-KR',{minimumFractionDigits:2})+'원';
-  document.getElementById('chart-cur-time').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0')+' 기준';
-  document.getElementById('chart-eff-rate').textContent=effRate().toLocaleString('ko-KR',{minimumFractionDigits:2});
+function updateChartRateDisplay() {
+  if (curRate <= 0) return;
+  const now = new Date();
+  document.getElementById('chart-cur-rate').textContent =
+    curRate.toLocaleString('ko-KR',{minimumFractionDigits:2})+'원';
+  document.getElementById('chart-cur-time').textContent =
+    now.getHours().toString().padStart(2,'0')+':'+
+    now.getMinutes().toString().padStart(2,'0')+':'+
+    now.getSeconds().toString().padStart(2,'0')+' 기준';
+  document.getElementById('chart-eff-rate').textContent =
+    effRate().toLocaleString('ko-KR',{minimumFractionDigits:2});
 }
 
-// ── localStorage ───────────────────────────────────────────────────
-const LS='ss_v6';
-function saveAll(){
-  try{
-    localStorage.setItem(LS,JSON.stringify({
-      accts,selB,trades,
-      bg:document.getElementById('bg').value,
-      sg:document.getElementById('sg').value,
-      acnt:document.getElementById('acnt').value,
-      adj:document.getElementById('adj').value,
+// ════════════════════════════════════════════════
+// localStorage
+// ════════════════════════════════════════════════
+const LS = 'ss_v8';
+function saveAll() {
+  try {
+    localStorage.setItem(LS, JSON.stringify({
+      accts, selB, trades,
+      bg:   document.getElementById('bg').value,
+      sg:   document.getElementById('sg').value,
+      acnt: document.getElementById('acnt').value,
+      adj:  document.getElementById('adj').value,
     }));
-    const b=document.getElementById('sv-badge');
-    b.style.display='block';setTimeout(()=>b.style.display='none',1000);
-  }catch(e){}
-}
-function loadAll(){
-  try{
-    const d=JSON.parse(localStorage.getItem(LS));
-    if(!d)return;
-    if(d.accts&&Array.isArray(d.accts)){accts=d.accts.slice(0,MAX_ACNT);while(accts.length<MAX_ACNT)accts.push({rate:'',qty:''});}
-    if(d.trades)trades=d.trades;
-    if(d.bg!=null)document.getElementById('bg').value=d.bg;
-    if(d.sg!=null)document.getElementById('sg').value=d.sg;
-    if(d.acnt!=null)document.getElementById('acnt').value=d.acnt;
-    if(d.adj!=null)document.getElementById('adj').value=d.adj;
-    if(d.selB!=null){selB=d.selB;for(let j=0;j<4;j++)document.getElementById('bk'+j).classList.toggle('sel',j===selB);}
-    document.getElementById('cnt-badge').textContent=`📋 현재 계좌 수: ${getAcnt()}개`;
-  }catch(e){}
+    const b = document.getElementById('sv-badge');
+    b.style.display = 'block';
+    setTimeout(() => b.style.display = 'none', 1000);
+  } catch(e) {}
 }
 
-// ── 스핀 버튼 ──────────────────────────────────────────────────────
-let adjT=null,adjI=null;
-function adjSpin(d,e){e.preventDefault();const inp=document.getElementById('adj');inp.value=Math.round((parseFloat(inp.value||0)+d)*10)/10;onCfgChange();adjT=setTimeout(()=>{adjI=setInterval(()=>{inp.value=Math.round((parseFloat(inp.value||0)+d)*10)/10;onCfgChange();},80);},400);}
-function adjStop(e){if(e)e.preventDefault();clearTimeout(adjT);clearInterval(adjI);}
-let cfgT=null,cfgI=null;
-function cfgSpin(id,d,e){
+// alarmFired 도 별도 저장 (앱 껐다 켜도 유지)
+function saveAlarmFired() {
+  try { localStorage.setItem('ss_alarm_v8', JSON.stringify(alarmFired)); } catch(e) {}
+}
+function loadAlarmFired() {
+  try {
+    const d = JSON.parse(localStorage.getItem('ss_alarm_v8'));
+    if (d) alarmFired = d;
+  } catch(e) {}
+}
+
+function loadAll() {
+  try {
+    const d = JSON.parse(localStorage.getItem(LS));
+    if (!d) return;
+    if (d.accts && Array.isArray(d.accts)) {
+      accts = d.accts.slice(0, MAX_ACNT);
+      while (accts.length < MAX_ACNT) accts.push({rate:'', qty:''});
+    }
+    if (d.trades) trades = d.trades;
+    if (d.bg   != null) document.getElementById('bg').value   = d.bg;
+    if (d.sg   != null) document.getElementById('sg').value   = d.sg;
+    if (d.acnt != null) document.getElementById('acnt').value = d.acnt;
+    if (d.adj  != null) document.getElementById('adj').value  = d.adj;
+    if (d.selB != null) {
+      selB = d.selB;
+      for (let j=0; j<4; j++)
+        document.getElementById('bk'+j).classList.toggle('sel', j===selB);
+    }
+    document.getElementById('cnt-badge').textContent = `📋 현재 계좌 수: ${getAcnt()}개`;
+  } catch(e) {}
+}
+
+// ════════════════════════════════════════════════
+// 스핀 버튼
+// ════════════════════════════════════════════════
+let adjT=null, adjI=null;
+function adjSpin(d,e) {
   e.preventDefault();
-  const inp=document.getElementById(id);
-  let v=(parseFloat(inp.value)||0)+d;
-  if(id==='acnt')v=Math.min(MAX_ACNT,Math.max(MIN_ACNT,v));
-  inp.value=v;onCfgChange();
-  cfgT=setTimeout(()=>{cfgI=setInterval(()=>{let v2=(parseFloat(inp.value)||0)+d;if(id==='acnt')v2=Math.min(MAX_ACNT,Math.max(MIN_ACNT,v2));inp.value=v2;onCfgChange();},80);},400);
+  const inp = document.getElementById('adj');
+  inp.value = Math.round((parseFloat(inp.value||0)+d)*10)/10;
+  onCfgChange();
+  adjT = setTimeout(() => { adjI = setInterval(() => { inp.value=Math.round((parseFloat(inp.value||0)+d)*10)/10; onCfgChange(); }, 80); }, 400);
 }
-function cfgStop(e){if(e)e.preventDefault();clearTimeout(cfgT);clearInterval(cfgI);}
-function selBank(i){selB=i;for(let j=0;j<4;j++)document.getElementById('bk'+j).classList.toggle('sel',j===i);saveAll();}
+function adjStop(e) { if(e)e.preventDefault(); clearTimeout(adjT); clearInterval(adjI); }
 
-// ── Audio / 알람 ───────────────────────────────────────────────────
-let audioCtx=null;
-function unlockAudio(){if(audioCtx)return;try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();const b=audioCtx.createBuffer(1,1,22050),s=audioCtx.createBufferSource();s.buffer=b;s.connect(audioCtx.destination);s.start(0);}catch(e){audioCtx=null;}}
-document.addEventListener('touchstart',()=>{unlockAudio();if(typeof Notification!=='undefined'&&Notification.permission==='default')Notification.requestPermission().then(p=>{if(p==='granted')document.getElementById('ask-auth').style.display='none';else checkAuth();});},{once:true});
-document.addEventListener('click',()=>unlockAudio(),{once:true});
-function playSound(type){if(!audioCtx)try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return;}if(audioCtx.state==='suspended')audioCtx.resume();const now=audioCtx.currentTime;(type==='buy'?[[440,0],[554,.18],[659,.36]]:[[659,0],[554,.18],[440,.36]]).forEach(([f,t])=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.frequency.value=f;g.gain.setValueAtTime(0.4,now+t);g.gain.exponentialRampToValueAtTime(0.001,now+t+0.28);o.start(now+t);o.stop(now+t+0.28);});}
-if('serviceWorker' in navigator)navigator.serviceWorker.register('/jin-sevensplit/sw.js').then(()=>checkAuth()).catch(()=>checkAuth());else checkAuth();
-function checkAuth(){const btn=document.getElementById('ask-auth');if(typeof Notification==='undefined')return;if(Notification.permission==='default'){btn.style.display='block';btn.onclick=()=>Notification.requestPermission().then(p=>{if(p==='granted')btn.style.display='none';else{btn.textContent='🔕 알림 차단됨 — 설정에서 허용';btn.style.background='#dc2626';btn.onclick=null;}});}else if(Notification.permission==='denied'){btn.style.display='block';btn.textContent='🔕 알림 차단됨 — 설정에서 허용';btn.style.background='#dc2626';btn.onclick=null;}}
-function sendPush(title,body){if(typeof Notification==='undefined'||Notification.permission!=='granted')return;const opts={body,icon:'https://dlxod2.github.io/jin-sevensplit/favicon.ico',vibrate:[200,100,200],tag:'ss-alert'};if('serviceWorker' in navigator)navigator.serviceWorker.ready.then(r=>r.showNotification(title,opts)).catch(()=>new Notification(title,opts));else new Notification(title,opts);}
-function fireAlarm(type,idx,rate){
-  // 환율 로드 전 차단 (앱 열릴 때 기본값 1380으로 오발 방지)
-  if(!_rateLoaded)return;
-  // 설정 변경 중 차단 (보정값 입력 도중 오발 방지)
-  if(_cfgChanging)return;
-  const key=String(idx);if(alarmFired[type][key])return;alarmFired[type][key]=true;const title=type==='buy'?`📉 ${idx+1}번 매수 알람!`:`📈 ${idx+1}번 매도 알람!`;const body=`${rate.toLocaleString()}원 도달! 지금 확인하세요.`;playSound(type);if(navigator.vibrate)navigator.vibrate(type==='buy'?[200,100,200,100,200]:[400,150,400]);const t=document.getElementById('alarm-toast');t.className='toast '+(type==='buy'?'tbuy':'tsell');t.innerHTML=`<strong>${title}</strong><br>${body}`;t.style.display='block';setTimeout(()=>t.style.display='none',4000);sendPush(title,body);document.getElementById('alm-status').textContent='🔔 알람 발생!';}
-function resetAlarms(){alarmFired={buy:{},sell:{}};document.getElementById('alm-status').textContent='🔔 알람 대기중';}
+let cfgT=null, cfgI=null;
+function cfgSpin(id,d,e) {
+  e.preventDefault();
+  const inp = document.getElementById(id);
+  let v = (parseFloat(inp.value)||0)+d;
+  if (id==='acnt') v = Math.min(MAX_ACNT, Math.max(MIN_ACNT, v));
+  inp.value = v; onCfgChange();
+  cfgT = setTimeout(() => { cfgI = setInterval(() => { let v2=(parseFloat(inp.value)||0)+d; if(id==='acnt')v2=Math.min(MAX_ACNT,Math.max(MIN_ACNT,v2)); inp.value=v2; onCfgChange(); }, 80); }, 400);
+}
+function cfgStop(e) { if(e)e.preventDefault(); clearTimeout(cfgT); clearInterval(cfgI); }
+function selBank(i) { selB=i; for(let j=0;j<4;j++) document.getElementById('bk'+j).classList.toggle('sel',j===i); saveAll(); }
 
-// ── 페이지 ─────────────────────────────────────────────────────────
-function goPage(p){
+// ════════════════════════════════════════════════
+// Audio / 알람
+// ════════════════════════════════════════════════
+let audioCtx = null;
+function unlockAudio() {
+  if (audioCtx) return;
+  try {
+    audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    const b=audioCtx.createBuffer(1,1,22050), s=audioCtx.createBufferSource();
+    s.buffer=b; s.connect(audioCtx.destination); s.start(0);
+  } catch(e) { audioCtx=null; }
+}
+document.addEventListener('touchstart', () => {
+  unlockAudio();
+  if (typeof Notification!=='undefined' && Notification.permission==='default') {
+    Notification.requestPermission().then(p => {
+      if (p==='granted') document.getElementById('ask-auth').style.display='none';
+      else checkAuth();
+    });
+  }
+}, {once:true});
+document.addEventListener('click', () => unlockAudio(), {once:true});
+
+function playSound(type) {
+  if (!audioCtx) try { audioCtx=new(window.AudioContext||window.webkitAudioContext)(); } catch(e){return;}
+  if (audioCtx.state==='suspended') audioCtx.resume();
+  const now=audioCtx.currentTime;
+  (type==='buy'?[[440,0],[554,.18],[659,.36]]:[[659,0],[554,.18],[440,.36]]).forEach(([f,t])=>{
+    const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    o.frequency.value=f;
+    g.gain.setValueAtTime(0.4,now+t);
+    g.gain.exponentialRampToValueAtTime(0.001,now+t+0.28);
+    o.start(now+t); o.stop(now+t+0.28);
+  });
+}
+
+if ('serviceWorker' in navigator)
+  navigator.serviceWorker.register('/jin-sevensplit/sw.js')
+    .then(()=>checkAuth()).catch(()=>checkAuth());
+else checkAuth();
+
+function checkAuth() {
+  const btn = document.getElementById('ask-auth');
+  if (typeof Notification==='undefined') return;
+  if (Notification.permission==='default') {
+    btn.style.display='block';
+    btn.onclick = () => Notification.requestPermission().then(p => {
+      if (p==='granted') btn.style.display='none';
+      else { btn.textContent='🔕 알림 차단됨 — 설정에서 허용'; btn.style.background='#dc2626'; btn.onclick=null; }
+    });
+  } else if (Notification.permission==='denied') {
+    btn.style.display='block';
+    btn.textContent='🔕 알림 차단됨 — 설정에서 허용';
+    btn.style.background='#dc2626'; btn.onclick=null;
+  }
+}
+
+function sendPush(title, body) {
+  if (typeof Notification==='undefined'||Notification.permission!=='granted') return;
+  const opts={body,icon:'https://dlxod2.github.io/jin-sevensplit/favicon.ico',vibrate:[200,100,200],tag:'ss-alert'};
+  if ('serviceWorker' in navigator)
+    navigator.serviceWorker.ready.then(r=>r.showNotification(title,opts)).catch(()=>new Notification(title,opts));
+  else new Notification(title,opts);
+}
+
+// ════════════════════════════════════════════════
+// ★★★ 핵심 알람 로직 — 마지막 계좌 기준 ★★★
+// ════════════════════════════════════════════════
+function checkAlarms() {
+  if (!_rateLoaded) return;   // 환율 로드 전 차단
+  if (_cfgChanging) return;   // 설정 변경 중 차단
+
+  const lastIdx = getLastFilledIdx();
+  if (lastIdx < 0) return;    // 입력된 계좌 없음
+
+  const lastRate = parseFloat(accts[lastIdx].rate);
+  if (!lastRate || lastRate <= 0) return;
+
+  const cur  = effRate();
+  const bg   = getBG();
+  const sg   = getSG();
+  const buyTarget  = Math.round((lastRate + bg) * 100) / 100;   // 매수 알람가
+  const sellTarget = Math.round((lastRate + sg) * 100) / 100;   // 매도 알람가
+
+  // 알람 기준 표시 업데이트
+  const baseBox = document.getElementById('alarm-base-box');
+  baseBox.style.display = 'block';
+  baseBox.innerHTML = `🔔 알람 기준: <b>${lastIdx+1}번 계좌</b> (${lastRate.toLocaleString()}원)<br>`+
+    `<span style="color:var(--tr)">매수알람 ${buyTarget.toLocaleString()}원</span> &nbsp;`+
+    `<span style="color:var(--tg)">매도알람 ${sellTarget.toLocaleString()}원</span>`;
+
+  // ★ 매수 알람 — 같은 기준으로 이미 울렸으면 스킵
+  if (cur <= buyTarget && alarmFired.buy !== String(buyTarget)) {
+    alarmFired.buy = String(buyTarget);
+    saveAlarmFired();
+    const title = `📉 ${lastIdx+1}번 매수 알람!`;
+    const body  = `${buyTarget.toLocaleString()}원 도달! 지금 확인하세요.`;
+    playSound('buy');
+    if (navigator.vibrate) navigator.vibrate([200,100,200,100,200]);
+    showToast(title, body, 'tbuy');
+    sendPush(title, body);
+    document.getElementById('alm-status').textContent = '📉 매수 알람 발생!';
+  }
+
+  // ★ 매도 알람 — 같은 기준으로 이미 울렸으면 스킵
+  if (cur >= sellTarget && alarmFired.sell !== String(sellTarget)) {
+    alarmFired.sell = String(sellTarget);
+    saveAlarmFired();
+    const title = `📈 ${lastIdx+1}번 매도 알람!`;
+    const body  = `${sellTarget.toLocaleString()}원 도달! 익절 고려하세요.`;
+    playSound('sell');
+    if (navigator.vibrate) navigator.vibrate([400,150,400]);
+    showToast(title, body, 'tsell');
+    sendPush(title, body);
+    document.getElementById('alm-status').textContent = '📈 매도 알람 발생!';
+  }
+}
+
+function showToast(title, body, cls) {
+  const t = document.getElementById('alarm-toast');
+  t.className = 'toast '+cls;
+  t.innerHTML = `<strong>${title}</strong><br>${body}`;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display='none', 5000);
+}
+
+function resetAlarms() {
+  alarmFired = {buy:'', sell:''};
+  saveAlarmFired();
+  document.getElementById('alm-status').textContent = '🔔 알람 대기중';
+}
+
+// ════════════════════════════════════════════════
+// 페이지
+// ════════════════════════════════════════════════
+function goPage(p) {
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('show'));
   document.querySelectorAll('.nb').forEach((el,i)=>el.classList.toggle('on',['main','trade','chart','fee'][i]===p));
   document.getElementById('page-'+p).classList.add('show');
-  if(p==='chart'){updateChartRateDisplay();loadChart();}
-  if(p==='trade')renderTrades();
+  if (p==='chart') { updateChartRateDisplay(); loadChart(); }
+  if (p==='trade') renderTrades();
 }
 
-// ── 추천가 연속 계산 (빈 칸이어도 cascade) ──────────────────────
-function getSuggested(i){
-  if(i===0) return Math.round(effRate());
-  // 이전 칸에 실제 입력값 있으면 그 값 기준, 없으면 추천가 기준
-  const prevActual=parseFloat((accts[i-1]||{}).rate);
-  const base=prevActual>0?prevActual:getSuggested(i-1);
-  return Math.round(base-getCG());
-}
-
-// ── 테이블 ─────────────────────────────────────────────────────────
-function buildTable(){
-  const cnt=getAcnt();
-  document.getElementById('tbl').innerHTML=Array.from({length:cnt},(_,i)=>{
-    const a=accts[i]||{rate:'',qty:''};
-    const suggested=getSuggested(i);
-    return `<tr>
-      <td><div style="font-size:11px;font-weight:500;color:var(--ts)">${i+1}</div>${i===0?'<div style="font-size:9px;color:var(--ti)">메인</div>':''}</td>
+// ════════════════════════════════════════════════
+// 테이블
+// ════════════════════════════════════════════════
+function buildTable() {
+  const cnt = getAcnt();
+  const lastIdx = getLastFilledIdx();
+  document.getElementById('tbl').innerHTML = Array.from({length:cnt}, (_,i) => {
+    const a = accts[i]||{rate:'',qty:''};
+    const sugg = getSuggested(i);
+    const isLast = (i === lastIdx);
+    return `<tr${isLast?' class="last-acct"':''}>
+      <td>
+        <div style="font-size:11px;font-weight:500;color:var(--ts)">${i+1}</div>
+        ${i===0?'<div style="font-size:9px;color:var(--ti)">메인</div>':''}
+        ${isLast?'<div style="font-size:8px;color:var(--ti)">▶알람</div>':''}
+      </td>
       <td><div class="rw">
         <div class="rb" ontouchstart="rowSpin(${i},-1,event)" ontouchend="rowStop(event)" onmousedown="rowSpin(${i},-1,event)" onmouseup="rowStop(event)" onmouseleave="rowStop(event)">−</div>
-        <input class="ri" id="r${i}" type="number" value="${a.rate}"
-          placeholder="${suggested}"
-          title="${i===0?'현재 환율 기준':'윗 칸 기준 간격 적용'}"
-          onblur="saveRate(${i})">
+        <input class="ri" id="r${i}" type="number" value="${a.rate}" placeholder="${sugg||''}" onblur="saveRate(${i})">
         <div class="rb" ontouchstart="rowSpin(${i},1,event)" ontouchend="rowStop(event)" onmousedown="rowSpin(${i},1,event)" onmouseup="rowStop(event)" onmouseleave="rowStop(event)">+</div>
       </div></td>
       <td><input class="qi" id="q${i}" type="number" value="${a.qty}" placeholder="100" onblur="saveQty(${i})"></td>
@@ -458,59 +622,100 @@ function buildTable(){
   renderCalc();
 }
 
-function renderCalc(){
-  const cur=effRate(),bg=getBG(),sg=getSG(),cnt=getAcnt();
-  let tP=0,tI=0,count=0,beLines='';
-  Array.from({length:cnt},(_,i)=>{
-    const a=accts[i]||{rate:'',qty:''};
-    const r=parseFloat(a.rate),q=parseFloat(a.qty),pe=document.getElementById('p'+i);
-    if(!pe)return;
-    if(r>0&&q>0){
-      const aB=r+bg,sT=r+sg,gr=Math.round((cur-r)*q),pc=((cur-r)/r*100);
-      tP+=gr;tI+=Math.round(r*q);count++;
-      if(cur<=aB)fireAlarm('buy',i,aB);
-      if(cur>=sT)fireAlarm('sell',i,sT);
-      const gc=gr>=0?'pos':'neg';
-      pe.innerHTML=`<span class="${gc}" style="font-size:11px">${gr>=0?'+':''}${gr.toLocaleString()}<br><span style="font-size:10px">(${pc>=0?'+':''}${pc.toFixed(1)}%)</span></span>`;
-      beLines+=`<div class="berow">
-        <span style="color:var(--ts);font-weight:500;min-width:26px">${i+1}번</span>
-        <span style="color:var(--tr)">매수알람 ${aB.toLocaleString()} <span class="${cur<=aB?'pos':'muted'}">${cur<=aB?'✓':''}</span></span>
-        <span style="color:var(--tg)">매도알람 ${sT.toLocaleString()} <span class="${cur>=sT?'pos':'muted'}">${cur>=sT?'✓익절!':''}</span></span>
-        <span class="pos" style="font-size:10px">+${Math.round((sT-r)*q).toLocaleString()}원</span>
-      </div>`;
-    }else{
-      // 입력값 없으면 추천 매수가 표시
-      const sugg=getSuggested(i);
-      pe.innerHTML=`<span class="muted" style="font-size:10px">${sugg.toLocaleString()}<br><span style="font-size:9px;color:var(--ti)">추천매수가</span></span>`;
+function renderCalc() {
+  const cur  = effRate();
+  const cnt  = getAcnt();
+  let tP=0, tI=0, count=0;
+
+  Array.from({length:cnt}, (_,i) => {
+    const a  = accts[i]||{rate:'',qty:''};
+    const r  = parseFloat(a.rate), q = parseFloat(a.qty);
+    const pe = document.getElementById('p'+i);
+    if (!pe) return;
+    const sugg = getSuggested(i);
+    if (r>0 && q>0) {
+      const gr = Math.round((cur-r)*q), pc = ((cur-r)/r*100);
+      tP += gr; tI += Math.round(r*q); count++;
+      const gc = gr>=0?'pos':'neg';
+      pe.innerHTML = `<span class="${gc}" style="font-size:11px">${gr>=0?'+':''}${gr.toLocaleString()}<br><span style="font-size:10px">(${pc>=0?'+':''}${pc.toFixed(1)}%)</span></span>`;
+    } else {
+      pe.innerHTML = sugg>0
+        ? `<span class="muted" style="font-size:10px">${sugg.toLocaleString()}<br><span style="font-size:9px;color:var(--ti)">추천매수가</span></span>`
+        : `<span class="muted" style="font-size:10px">-</span>`;
     }
   });
-  document.getElementById('tft').innerHTML=count>0?`<tr class="trow"><td colspan="2" style="text-align:left;padding-left:8px;font-size:10px">${count}계좌/${Math.round(tI/10000)}만원</td><td></td><td class="${tP>=0?'pos':'neg'}" style="font-size:10px;font-weight:500">${tP>=0?'+':''}${tP.toLocaleString()}원</td><td></td></tr>`:'';
-  if(count>0){
-    document.getElementById('isum').innerHTML=`<div class="ibox"><div class="irow"><span>알람 기준 환율</span><span style="font-weight:500">${cur.toLocaleString()}원</span></div><div class="irow"><span>평가 손익 합계</span><span class="${tP>=0?'pos':'neg'}" style="font-weight:500">${tP>=0?'+':''}${tP.toLocaleString()}원</span></div></div>`;
-    document.getElementById('bebox').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><span style="font-size:11px;color:var(--ts);font-weight:500">알람 목표가 (매수${bg>0?'+':''}${bg}/매도+${sg}원)</span><button class="xb" onclick="resetAlarms()">알람초기화</button></div><div style="background:var(--bp);border:0.5px solid var(--bo);border-radius:var(--rm);padding:8px 12px">${beLines}</div>`;
-  }else{document.getElementById('isum').innerHTML='';document.getElementById('bebox').innerHTML='';}
+
+  document.getElementById('tft').innerHTML = count>0
+    ? `<tr class="trow"><td colspan="2" style="text-align:left;padding-left:8px;font-size:10px">${count}계좌/${Math.round(tI/10000)}만원</td><td></td><td class="${tP>=0?'pos':'neg'}" style="font-size:10px;font-weight:500">${tP>=0?'+':''}${tP.toLocaleString()}원</td><td></td></tr>`
+    : '';
+
+  if (count>0) {
+    document.getElementById('isum').innerHTML = `<div class="ibox">
+      <div class="irow"><span>알람 기준 환율</span><span style="font-weight:500">${cur>0?cur.toLocaleString():'--'}원</span></div>
+      <div class="irow"><span>평가 손익 합계</span><span class="${tP>=0?'pos':'neg'}" style="font-weight:500">${tP>=0?'+':''}${tP.toLocaleString()}원</span></div>
+    </div>`;
+
+    // 알람 초기화 버튼
+    document.getElementById('bebox').innerHTML = `
+      <div style="display:flex;justify-content:flex-end;margin-bottom:4px">
+        <button class="xb" onclick="resetAlarms()">알람초기화</button>
+      </div>`;
+  } else {
+    document.getElementById('isum').innerHTML = '';
+    document.getElementById('bebox').innerHTML = '';
+  }
+
+  // 알람 체크
+  checkAlarms();
 }
 
-function saveRate(i){if(accts[i])accts[i].rate=document.getElementById('r'+i).value;resetAlarms();saveAll();renderCalc();}
-function saveQty(i){if(accts[i])accts[i].qty=document.getElementById('q'+i).value;saveAll();renderCalc();}
-function clrRow(i){accts[i]={rate:'',qty:''};const ri=document.getElementById('r'+i),qi=document.getElementById('q'+i);if(ri)ri.value='';if(qi)qi.value='';resetAlarms();saveAll();renderCalc();}
-let rowT=null,rowI=null;
-function rowSpin(i,d,e){e.preventDefault();const inp=document.getElementById('r'+i);const v=Math.max(0,(parseFloat(inp.value)||parseFloat(inp.placeholder)||0)+d);inp.value=v;if(accts[i])accts[i].rate=String(v);resetAlarms();saveAll();renderCalc();rowT=setTimeout(()=>{rowI=setInterval(()=>{const v2=Math.max(0,(parseFloat(inp.value)||0)+d);inp.value=v2;if(accts[i])accts[i].rate=String(v2);resetAlarms();renderCalc();},80);},400);}
-function rowStop(e){if(e)e.preventDefault();clearTimeout(rowT);clearInterval(rowI);saveAll();}
+function saveRate(i) {
+  accts[i].rate = document.getElementById('r'+i).value;
+  // 계좌 변경 시 알람 기록 초기화 (새 기준으로)
+  alarmFired = {buy:'', sell:''};
+  saveAlarmFired();
+  saveAll(); buildTable();
+}
+function saveQty(i)  { accts[i].qty=document.getElementById('q'+i).value; saveAll(); renderCalc(); }
+function clrRow(i)   {
+  accts[i]={rate:'',qty:''};
+  const ri=document.getElementById('r'+i), qi=document.getElementById('q'+i);
+  if(ri)ri.value=''; if(qi)qi.value='';
+  // 삭제 시 알람 기록 초기화
+  alarmFired={buy:'',sell:''};
+  saveAlarmFired();
+  saveAll(); buildTable();
+}
 
-// ── 거래기록 ────────────────────────────────────────────────────────
+let rowT=null, rowI=null;
+function rowSpin(i,d,e) {
+  e.preventDefault();
+  const inp=document.getElementById('r'+i);
+  const v=Math.max(0,(parseFloat(inp.value)||parseFloat(inp.placeholder)||0)+d);
+  inp.value=v; accts[i].rate=String(v);
+  alarmFired={buy:'',sell:''}; saveAlarmFired();
+  saveAll(); renderCalc();
+  rowT=setTimeout(()=>{rowI=setInterval(()=>{const v2=Math.max(0,(parseFloat(inp.value)||0)+d);inp.value=v2;accts[i].rate=String(v2);renderCalc();},80);},400);
+}
+function rowStop(e) { if(e)e.preventDefault(); clearTimeout(rowT); clearInterval(rowI); saveAll(); }
+
+// ════════════════════════════════════════════════
+// 거래기록
+// ════════════════════════════════════════════════
 function addRecord(){
   const buyRate=parseFloat(document.getElementById('r-buy').value);
   const qty=parseFloat(document.getElementById('r-qty').value);
   const sellRate=parseFloat(document.getElementById('r-sell').value);
-  if(!buyRate||!qty){alert('매수가와 수량은 필수입니다!');return;}
+  if(!buyRate||!qty){alert('매수가와 수량은 필수!');return;}
   const now=new Date();
-  const dateStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  const ds=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
   const profit=sellRate?Math.round((sellRate-buyRate)*qty):null;
   const profitRate=sellRate?(((sellRate-buyRate)/buyRate)*100).toFixed(2):null;
-  trades.unshift({id:Date.now(),date:dateStr,buyRate,qty,sellRate:sellRate||null,profit,profitRate,total:Math.round(buyRate*qty)});
-  saveAll();renderTrades();
-  document.getElementById('r-buy').value='';document.getElementById('r-qty').value='';document.getElementById('r-sell').value='';
+  trades.unshift({id:Date.now(),date:ds,buyRate,qty,sellRate:sellRate||null,profit,profitRate,total:Math.round(buyRate*qty)});
+  saveAll(); renderTrades();
+  document.getElementById('r-buy').value='';
+  document.getElementById('r-qty').value='';
+  document.getElementById('r-sell').value='';
 }
 function delTrade(id){trades=trades.filter(t=>t.id!==id);saveAll();renderTrades();}
 function renderTrades(){
@@ -525,7 +730,7 @@ function renderTrades(){
   document.getElementById('s-count').textContent=trades.length+'회';
   document.getElementById('s-total').textContent=Math.round(totalBuy/10000)+'만원';
   const el=document.getElementById('trade-items');
-  if(trades.length===0){el.innerHTML='<div class="tempty">기록이 없어요<br>매수가 · 수량 · 매도가를 입력하세요</div>';return;}
+  if(!trades.length){el.innerHTML='<div class="tempty">기록이 없어요</div>';return;}
   el.innerHTML=trades.map(t=>`<div class="titem">
     <div class="tmain">
       <div class="ttop">
@@ -538,43 +743,54 @@ function renderTrades(){
   </div>`).join('');
 }
 
-// ── 환율 가져오기 (jsdelivr — CORS 허용, GitHub Pages 완벽 지원) ──
-async function fetchRate(){
-  const today=new Date().toISOString().slice(0,10);
-  const urls=[
+// ════════════════════════════════════════════════
+// 환율 — jsdelivr (GitHub Pages CORS 완벽 지원)
+// ════════════════════════════════════════════════
+async function fetchRate() {
+  const today = new Date().toISOString().slice(0,10);
+  const urls = [
     `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json`,
     `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${today}/v1/currencies/usd.json`,
   ];
-  for(const url of urls){
-    try{
-      const r=await fetch(url+'?t='+Date.now(),{cache:'no-store'});
-      const d=await r.json();
-      const krw=d.usd?.krw;
-      if(krw&&krw>800&&krw<2000){
-        const prev=curRate;
-        curRate=Math.round(krw*100)/100;
-        _rateLoaded=true; // ★ 첫 환율 로드 완료 → 이제부터 알람 허용
-        const diff=(curRate-prev).toFixed(2);
-        document.getElementById('r-cur').textContent=curRate.toLocaleString('ko-KR',{minimumFractionDigits:2});
-        const b=document.getElementById('r-chg');
-        b.textContent=(parseFloat(diff)>=0?'+':'')+diff;
-        b.className='badge '+(parseFloat(diff)>0?'up':parseFloat(diff)<0?'dn':'neu');
-        const now=new Date();
-        document.getElementById('r-time').textContent=
+  for (const url of urls) {
+    try {
+      const r = await fetch(url+'?t='+Date.now(), {cache:'no-store'});
+      const d = await r.json();
+      const krw = d.usd?.krw;
+      if (krw && krw>800 && krw<2000) {
+        const prev = curRate;
+        curRate = Math.round(krw*100)/100;
+        const diff = (curRate-prev).toFixed(2);
+        document.getElementById('r-cur').textContent =
+          curRate.toLocaleString('ko-KR',{minimumFractionDigits:2});
+        const b = document.getElementById('r-chg');
+        b.textContent = (parseFloat(diff)>=0?'+':'')+diff;
+        b.className   = 'badge '+(parseFloat(diff)>0?'up':parseFloat(diff)<0?'dn':'neu');
+        const now = new Date();
+        document.getElementById('r-time').textContent =
           now.getHours().toString().padStart(2,'0')+':'+
           now.getMinutes().toString().padStart(2,'0')+':'+
           now.getSeconds().toString().padStart(2,'0')+' 기준';
+        // ★ 환율 로드 완료 → 이제부터 알람 허용
+        _rateLoaded = true;
+        document.getElementById('alm-status').textContent = '🔔 알람 대기중';
         updateAdjInfo();
         renderCalc();
         return;
       }
-    }catch(e){continue;}
+    } catch(e) { continue; }
   }
-  document.getElementById('r-time').textContent='로드 실패 — 새로고침 해주세요';
+  document.getElementById('r-time').textContent = '로드 실패 — 새로고침 해주세요';
 }
-function doRefresh(btn){const orig=btn.textContent;btn.textContent='⟳';btn.disabled=true;fetchRate().finally(()=>{btn.textContent=orig;btn.disabled=false;});}
 
-// ── 차트 ────────────────────────────────────────────────────────────
+function doRefresh(btn) {
+  const orig=btn.textContent; btn.textContent='⟳'; btn.disabled=true;
+  fetchRate().finally(()=>{btn.textContent=orig;btn.disabled=false;});
+}
+
+// ════════════════════════════════════════════════
+// 차트
+// ════════════════════════════════════════════════
 function selChart(m){chartMonths=m;document.querySelectorAll('.ct').forEach((el,i)=>el.classList.toggle('on',[3,6,12][i]===m));loadChart();}
 function fmtD(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 async function fetchH(ds){
@@ -593,7 +809,7 @@ async function loadChart(){
     if(fmtD(d)===fmtD(today)&&curRate>0)v=curRate;
     return v?{date:d,val:v}:null;
   }).filter(Boolean);
-  if(pts.length<2){document.getElementById('chart-area').innerHTML='<div class="loading">데이터를 불러올 수 없습니다.</div>';return;}
+  if(pts.length<2){document.getElementById('chart-area').innerHTML='<div class="loading">데이터 없음</div>';return;}
   renderChart(pts);
 }
 function renderChart(pts){
@@ -632,13 +848,16 @@ function renderChart(pts){
     </div>`;
 }
 
-// ── 시작 ────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════
+// 시작
+// ════════════════════════════════════════════════
 loadAll();
+loadAlarmFired();
 buildTable();
 updateAdjInfo();
 renderTrades();
 fetchRate();
-setInterval(fetchRate,30000);
+setInterval(fetchRate, 30000);
 </script>
 </body>
 </html>
